@@ -1,0 +1,15 @@
+# Application root hardening (Apache / shared hosting).
+# Keep public PHP entry points reachable; block private artifacts.
+
+# Do not list directory contents.
+Options -Indexes
+
+# Block common sensitive filenames if ever placed in the web tree.
+<FilesMatch "(?i)^(database\.local\.php|\.env|\.git|composer\.(json|lock)|.*\.(sql|bak|old|log))$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Deny from all
+    </IfModule>
+</FilesMatch>

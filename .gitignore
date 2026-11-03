@@ -1,0 +1,16 @@
+# Private database credentials (never commit)
+config/database.local.php
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Uploaded student profile pictures (keep directory via .gitkeep)
+uploads/students/*
+!uploads/students/.gitkeep
+
+# Optional local/production flags (no secrets ideally)
+config/app.local.php

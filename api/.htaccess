@@ -1,0 +1,2 @@
+# Allow PHP API scripts; deny directory indexes.
+Options -Indexes
