@@ -18,8 +18,8 @@ HTML5, CSS3, Vanilla JS, Bootstrap 5.3, PHP 8.x, MariaDB/MySQL, PDO.
 | Production preparation (Phase 8.1) | **COMPLETE** — see `deployment/` |
 | Public deployment (Phase 8.2) | **COMPLETE** |
 | Public URL | **[LIVE](https://bwp501-hw-studentregsystem.infinityfreeapp.com/)** |
-| Final report | **PENDING** |
-| Moodle submission | **PENDING** |
+| Final report | **COMPLETE** |
+| Moodle submission | **COMPLETE** |
 
 ## Local runtime
 
