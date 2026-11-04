@@ -4,6 +4,8 @@ BWP501 — Syrian Virtual University.
 
 PHP/MySQL student administration app: authentication, CRUD, profile images, search, sorting, pagination, AJAX validation, and a Bootstrap 5 UI.
 
+ **Live Demo:** https://bwp501-hw-studentregsystem.infinityfreeapp.com/
+
 ## Stack
 
 HTML5, CSS3, Vanilla JS, Bootstrap 5.3, PHP 8.x, MariaDB/MySQL, PDO.
@@ -14,8 +16,8 @@ HTML5, CSS3, Vanilla JS, Bootstrap 5.3, PHP 8.x, MariaDB/MySQL, PDO.
 |------|--------|
 | Local development (Phases 1–7) | **COMPLETE** |
 | Production preparation (Phase 8.1) | **COMPLETE** — see `deployment/` |
-| Public deployment (Phase 8.2) | **PENDING** |
-| Public URL | **PENDING** |
+| Public deployment (Phase 8.2) | **COMPLETE** |
+| Public URL | **[LIVE](https://bwp501-hw-studentregsystem.infinityfreeapp.com/)** |
 | Final report | **PENDING** |
 | Moodle submission | **PENDING** |
 
