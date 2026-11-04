@@ -3,11 +3,6 @@
 -- Compatible with MySQL and phpMyAdmin
 -- Charset: utf8mb4 (English + Arabic)
 
-CREATE DATABASE IF NOT EXISTS `student_registration_system`
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-
-USE `student_registration_system`;
 
 -- ---------------------------------------------------------------------------
 -- users: authentication accounts

@@ -18,6 +18,26 @@ require_once __DIR__ . '/includes/header.php';
 <section class="hero">
     <div class="container py-5">
         <div class="row align-items-center g-4">
+                    <section class="developer-banner">
+    <div class="developer-banner-content">
+        <span class="developer-label">PROJECT DEVELOPERS</span>
+        <h2>Designed & Developed By</h2>
+
+        <div class="developer-names">
+            <span class="developer-name">
+                <span class="developer-icon">✦</span>
+                ali_191708
+            </span>
+
+            <span class="developer-name">
+                <span class="developer-icon">✦</span>
+                jawa_259605
+            </span>
+        </div>
+    </div>
+
+    <div class="developer-decoration">BWP501</div>
+</section>
             <div class="col-lg-7">
                 <span class="hero-badge mb-3">BWP501 · Syrian Virtual University</span>
                 <h1 class="display-5 fw-bold text-navy mb-3">Student Registration System</h1>

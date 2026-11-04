@@ -15,10 +15,10 @@
 declare(strict_types=1);
 
 return [
-    'host' => 'sqlXXX.infinityfree.com',
+    'host' => 'sql211.infinityfree.com',
     'port' => 3306,
-    'dbname' => 'if0_XXXXXX_srs',
-    'username' => 'if0_XXXXXX',
-    'password' => 'REPLACE_WITH_PANEL_PASSWORD',
+    'dbname' => 'if0_43355889_student_registration_system',
+    'username' => 'if0_43355889',
+    'password' => 'ysuDa4zmWOH',
     'charset' => 'utf8mb4',
 ];
