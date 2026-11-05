@@ -1,8 +1,0 @@
-# Deny web access to configuration files (credentials, connection settings).
-# Does not affect public PHP pages outside this directory.
-<IfModule mod_authz_core.c>
-    Require all denied
-</IfModule>
-<IfModule !mod_authz_core.c>
-    Deny from all
-</IfModule>
