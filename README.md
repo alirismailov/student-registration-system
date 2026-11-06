@@ -39,7 +39,7 @@ HTML5، CSS3، Vanilla JS، Bootstrap 5.3، PHP 8.x، MariaDB/MySQL، PDO.
 
 ## الإعداد (محلياً)
 
-1. استورد `database/student_registration_system.sql` (أو استخدم قاعدة بيانات موجودة). للاستضافة المجانية راجع `DEPLOY_INFINITYFREE.md`.
+1. استورد `database/student_registration_system.sql` (أو استخدم قاعدة بيانات موجودة).
 2. انسخ `config/database.local.php.example` ← `config/database.local.php` واضبط بيانات الاتصال.
 3. تأكد من أن Apache يستطيع تشغيل المشروع (مثلاً عبر junction ضمن `htdocs/ab_hasan`).
 4. افتح رابط الموقع أعلاه وأنشئ حساباً.
