@@ -105,7 +105,7 @@ function requireAuth(): void
 
     $userId = currentUserId();
     if ($userId === null) {
-        flash_set('warning', 'Please log in to continue.');
+        flash_set('warning', 'يرجى تسجيل الدخول للمتابعة.');
         redirect_to('login.php');
     }
 
@@ -115,7 +115,7 @@ function requireAuth(): void
         $user = $stmt->fetch();
     } catch (Throwable $e) {
         error_log('requireAuth lookup failed: ' . $e->getMessage());
-        flash_set('danger', 'Unable to verify your session. Please log in again.');
+        flash_set('danger', 'تعذّر التحقق من جلستك. يرجى تسجيل الدخول مجدداً.');
         logout_user();
         redirect_to('login.php');
     }
@@ -123,7 +123,7 @@ function requireAuth(): void
     if (!$user) {
         logout_user();
         init_session();
-        flash_set('warning', 'Your account is no longer available. Please log in again.');
+        flash_set('warning', 'حسابك لم يعد متاحاً. يرجى تسجيل الدخول مجدداً.');
         redirect_to('login.php');
     }
 

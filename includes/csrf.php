@@ -53,7 +53,7 @@ function require_valid_csrf(): void
     $token = isset($_POST['_csrf']) ? (string) $_POST['_csrf'] : null;
 
     if (!csrf_verify($token)) {
-        flash_set('danger', 'Your session token is invalid or expired. Please try again.');
+        flash_set('danger', 'رمز الجلسة غير صالح أو منتهي الصلاحية. يرجى المحاولة مرة أخرى.');
         $referer = $_SERVER['HTTP_REFERER'] ?? '';
         if (is_string($referer) && $referer !== '') {
             header('Location: ' . $referer);

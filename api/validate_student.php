@@ -18,13 +18,13 @@ init_session();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['valid' => false, 'errors' => ['form' => 'Method not allowed.']]);
+    echo json_encode(['valid' => false, 'errors' => ['form' => 'الطريقة غير مسموح بها.']]);
     exit;
 }
 
 if (!isAuthenticated()) {
     http_response_code(401);
-    echo json_encode(['valid' => false, 'errors' => ['form' => 'Authentication required.']]);
+    echo json_encode(['valid' => false, 'errors' => ['form' => 'يلزم تسجيل الدخول.']]);
     exit;
 }
 
@@ -32,14 +32,14 @@ if (!isAuthenticated()) {
 $userId = currentUserId();
 if ($userId === null) {
     http_response_code(401);
-    echo json_encode(['valid' => false, 'errors' => ['form' => 'Authentication required.']]);
+    echo json_encode(['valid' => false, 'errors' => ['form' => 'يلزم تسجيل الدخول.']]);
     exit;
 }
 
 $token = isset($_POST['_csrf']) ? (string) $_POST['_csrf'] : null;
 if (!csrf_verify($token)) {
     http_response_code(403);
-    echo json_encode(['valid' => false, 'errors' => ['form' => 'Invalid session token. Refresh and try again.']]);
+    echo json_encode(['valid' => false, 'errors' => ['form' => 'رمز الجلسة غير صالح. حدّث الصفحة وحاول مرة أخرى.']]);
     exit;
 }
 

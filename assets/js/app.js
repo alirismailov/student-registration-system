@@ -25,9 +25,9 @@
         }
         const showing = input.type === 'text';
         input.type = showing ? 'password' : 'text';
-        btn.textContent = showing ? 'Show' : 'Hide';
+        btn.textContent = showing ? 'إظهار' : 'إخفاء';
         btn.setAttribute('aria-pressed', showing ? 'false' : 'true');
-        btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+        btn.setAttribute('aria-label', showing ? 'إظهار كلمة المرور' : 'إخفاء كلمة المرور');
       });
     });
 
@@ -42,7 +42,7 @@
             el.disabled = true;
             if (el instanceof HTMLButtonElement && !el.dataset.originalLabel) {
               el.dataset.originalLabel = el.textContent || '';
-              el.textContent = el.dataset.loadingLabel || 'Please wait…';
+              el.textContent = el.dataset.loadingLabel || 'يرجى الانتظار…';
             }
           }
         });

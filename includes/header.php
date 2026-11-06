@@ -22,28 +22,30 @@ if ($loggedIn && $bodyClass === '') {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Student Registration System — BWP501 university project">
+    <meta name="description" content="نظام تسجيل الطلاب — مشروع جامعي BWP501">
     <title><?= e($pageTitle) ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet"
           crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="<?= e(base_url('assets/css/style.css')) ?>?v=5">
     <link rel="stylesheet" href="<?= e(base_url('assets/css/students.css')) ?>">
 </head>
 <body class="<?= e($bodyClass) ?>">
-<a class="visually-hidden-focusable btn btn-sm btn-primary skip-link" href="#main-content">Skip to main content</a>
+<a class="visually-hidden-focusable btn btn-sm btn-primary skip-link" href="#main-content">انتقل إلى المحتوى الرئيسي</a>
 
-<nav class="navbar navbar-expand-lg navbar-dark app-navbar sticky-top" aria-label="Main navigation">
+<nav class="navbar navbar-expand-lg navbar-dark app-navbar sticky-top" aria-label="التنقل الرئيسي">
     <div class="container">
         <a class="navbar-brand fw-semibold" href="<?= e(base_url($loggedIn ? 'dashboard.php' : 'index.php')) ?>">
             <?= e(APP_NAME) ?>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
-                aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="mainNav" aria-expanded="false" aria-label="إظهار/إخفاء القائمة">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="mainNav">
@@ -51,19 +53,19 @@ if ($loggedIn && $bodyClass === '') {
                 <?php if ($loggedIn): ?>
                     <li class="nav-item">
                         <a class="nav-link<?= $currentPage === 'dashboard' ? ' active' : '' ?>"
-                           href="<?= e(base_url('dashboard.php')) ?>"<?= $currentPage === 'dashboard' ? ' aria-current="page"' : '' ?>>Dashboard</a>
+                           href="<?= e(base_url('dashboard.php')) ?>"<?= $currentPage === 'dashboard' ? ' aria-current="page"' : '' ?>>لوحة التحكم</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link<?= $currentPage === 'view' ? ' active' : '' ?>"
-                           href="<?= e(base_url('view_students.php')) ?>"<?= $currentPage === 'view' ? ' aria-current="page"' : '' ?>>Students</a>
+                           href="<?= e(base_url('view_students.php')) ?>"<?= $currentPage === 'view' ? ' aria-current="page"' : '' ?>>الطلاب</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link<?= $currentPage === 'add' ? ' active' : '' ?>"
-                           href="<?= e(base_url('add_student.php')) ?>"<?= $currentPage === 'add' ? ' aria-current="page"' : '' ?>>Add Student</a>
+                           href="<?= e(base_url('add_student.php')) ?>"<?= $currentPage === 'add' ? ' aria-current="page"' : '' ?>>إضافة طالب</a>
                     </li>
                     <?php if ($navUsername !== null): ?>
                         <li class="nav-item d-none d-lg-block">
-                            <span class="nav-link nav-user" title="Signed-in account">
+                            <span class="nav-link nav-user" title="الحساب المسجَّل دخوله">
                                 <?= e($navUsername) ?>
                             </span>
                         </li>
@@ -71,21 +73,21 @@ if ($loggedIn && $bodyClass === '') {
                     <li class="nav-item">
                         <form method="post" action="<?= e(base_url('logout.php')) ?>" class="d-inline ms-lg-1">
                             <?= csrf_field() ?>
-                            <button type="submit" class="btn btn-sm btn-logout">Logout</button>
+                            <button type="submit" class="btn btn-sm btn-logout">تسجيل الخروج</button>
                         </form>
                     </li>
                 <?php else: ?>
                     <li class="nav-item">
                         <a class="nav-link<?= $currentPage === 'home' ? ' active' : '' ?>"
-                           href="<?= e(base_url('index.php')) ?>"<?= $currentPage === 'home' ? ' aria-current="page"' : '' ?>>Home</a>
+                           href="<?= e(base_url('index.php')) ?>"<?= $currentPage === 'home' ? ' aria-current="page"' : '' ?>>الرئيسية</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link<?= $currentPage === 'login' ? ' active' : '' ?>"
-                           href="<?= e(base_url('login.php')) ?>"<?= $currentPage === 'login' ? ' aria-current="page"' : '' ?>>Login</a>
+                           href="<?= e(base_url('login.php')) ?>"<?= $currentPage === 'login' ? ' aria-current="page"' : '' ?>>تسجيل الدخول</a>
                     </li>
                     <li class="nav-item">
                         <a class="btn btn-sm btn-light text-navy fw-semibold ms-lg-2 px-3"
-                           href="<?= e(base_url('register.php')) ?>">Register</a>
+                           href="<?= e(base_url('register.php')) ?>">إنشاء حساب</a>
                     </li>
                 <?php endif; ?>
             </ul>
@@ -99,7 +101,7 @@ if ($loggedIn && $bodyClass === '') {
         <div class="alert alert-<?= e($flash['type'] === 'danger' ? 'danger' : ($flash['type'] === 'warning' ? 'warning' : ($flash['type'] === 'success' ? 'success' : 'info'))) ?> alert-dismissible fade show"
              role="alert">
             <?= e($flash['message']) ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close notification"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق التنبيه"></button>
         </div>
     </div>
 <?php endif; ?>

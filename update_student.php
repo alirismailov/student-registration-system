@@ -11,7 +11,7 @@ $errors = [];
 $id = parse_positive_int($_GET['id'] ?? ($_POST['id'] ?? null));
 
 if ($id === null) {
-    flash_set('danger', 'Invalid student ID.');
+    flash_set('danger', 'رقم الطالب غير صالح.');
     redirect_to('view_students.php');
 }
 
@@ -19,12 +19,12 @@ try {
     $student = find_student_by_id($pdo, $id);
 } catch (Throwable $e) {
     error_log('Load student for update failed: ' . $e->getMessage());
-    flash_set('danger', 'Unable to load the student. Please try again later.');
+    flash_set('danger', 'تعذّر تحميل بيانات الطالب. يرجى المحاولة لاحقاً.');
     redirect_to('view_students.php');
 }
 
 if ($student === null) {
-    flash_set('warning', 'Student not found.');
+    flash_set('warning', 'لم يتم العثور على الطالب.');
     redirect_to('view_students.php');
 }
 
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $postId = parse_positive_int($_POST['id'] ?? null);
     if ($postId === null || $postId !== $id) {
-        flash_set('danger', 'Invalid student ID.');
+        flash_set('danger', 'رقم الطالب غير صالح.');
         redirect_to('view_students.php');
     }
 
@@ -82,12 +82,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 delete_managed_student_image($pdo, $currentPicture, $id);
             }
 
-            flash_set('success', 'Student updated successfully.');
+            flash_set('success', 'تم تحديث بيانات الطالب بنجاح.');
             redirect_to('view_students.php');
         } catch (Throwable $e) {
             error_log('Update student failed: ' . $e->getMessage());
             remove_orphan_upload($newImagePath);
-            $errors['form'] = 'Unable to update the student. Please try again later.';
+            $errors['form'] = 'تعذّر تحديث بيانات الطالب. يرجى المحاولة لاحقاً.';
         }
     } else {
         remove_orphan_upload($newImagePath);
@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $currentPage = 'update';
-$pageTitle = 'Update Student | Student Registration System';
+$pageTitle = 'تعديل طالب | نظام تسجيل الطلاب';
 
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -104,11 +104,11 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
         <div class="page-header d-flex flex-wrap justify-content-between align-items-start gap-2">
             <div>
-                <p class="page-kicker">Students</p>
-                <h1>Edit student</h1>
-                <p class="page-desc">Updating <strong><?= e($name) ?></strong> (ID <?= e((string) $id) ?>). Leave the image empty to keep the current photo.</p>
+                <p class="page-kicker">الطلاب</p>
+                <h1>تعديل بيانات طالب</h1>
+                <p class="page-desc">تعديل بيانات <strong><?= e($name) ?></strong> (الرقم <?= e((string) $id) ?>). اترك حقل الصورة فارغاً للإبقاء على الصورة الحالية.</p>
             </div>
-            <a class="btn btn-outline-navy" href="<?= e(base_url('view_students.php')) ?>">Back to list</a>
+            <a class="btn btn-outline-navy" href="<?= e(base_url('view_students.php')) ?>">العودة إلى القائمة</a>
         </div>
 
         <div class="row justify-content-center">
@@ -129,25 +129,25 @@ require_once __DIR__ . '/includes/header.php';
 
                         <div class="image-preview-wrap mb-4">
                             <?php if ($currentImageUrl !== null): ?>
-                                <img src="<?= e($currentImageUrl) ?>" alt="Current profile picture for <?= e($name) ?>"
+                                <img src="<?= e($currentImageUrl) ?>" alt="الصورة الشخصية الحالية لـ <?= e($name) ?>"
                                      class="student-avatar student-avatar-lg rounded">
                             <?php else: ?>
                                 <div class="student-avatar student-avatar-lg student-avatar-placeholder rounded"
                                      aria-hidden="true"><?= e(mb_strtoupper(mb_substr($name, 0, 1))) ?></div>
                             <?php endif; ?>
                             <div class="image-preview-meta">
-                                <p class="fw-semibold text-navy mb-1">Current photo</p>
+                                <p class="fw-semibold text-navy mb-1">الصورة الحالية</p>
                                 <p class="small text-muted mb-0">
                                     <?= $currentImageUrl !== null
-                                        ? 'Upload a new file below to replace it. Leaving the file empty keeps this image.'
-                                        : 'No photo yet. You may upload one below.' ?>
+                                        ? 'ارفع ملفاً جديداً أدناه لاستبدالها. ترك الحقل فارغاً يُبقي على هذه الصورة.'
+                                        : 'لا توجد صورة بعد. يمكنك رفع صورة أدناه.' ?>
                                 </p>
                             </div>
                         </div>
 
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label for="student_name" class="form-label">Full name <span class="required-mark" aria-hidden="true">*</span></label>
+                                <label for="student_name" class="form-label">الاسم الكامل <span class="required-mark" aria-hidden="true">*</span></label>
                                 <input type="text" id="student_name" name="name" maxlength="100" required
                                        class="form-control<?= isset($errors['name']) ? ' is-invalid' : '' ?>"
                                        value="<?= e($name) ?>" data-validate-field="name"
@@ -156,7 +156,7 @@ require_once __DIR__ . '/includes/header.php';
                             </div>
 
                             <div class="col-md-6">
-                                <label for="student_email" class="form-label">Email <span class="required-mark" aria-hidden="true">*</span></label>
+                                <label for="student_email" class="form-label">البريد الإلكتروني <span class="required-mark" aria-hidden="true">*</span></label>
                                 <input type="email" id="student_email" name="email" maxlength="100" required
                                        class="form-control<?= isset($errors['email']) ? ' is-invalid' : '' ?>"
                                        value="<?= e($email) ?>" data-validate-field="email"
@@ -165,7 +165,7 @@ require_once __DIR__ . '/includes/header.php';
                             </div>
 
                             <div class="col-md-6">
-                                <label for="student_phone" class="form-label">Phone number <span class="required-mark" aria-hidden="true">*</span></label>
+                                <label for="student_phone" class="form-label">رقم الهاتف <span class="required-mark" aria-hidden="true">*</span></label>
                                 <input type="tel" id="student_phone" name="phone" maxlength="15" required
                                        class="form-control<?= isset($errors['phone']) ? ' is-invalid' : '' ?>"
                                        value="<?= e($phone) ?>" data-validate-field="phone"
@@ -174,7 +174,7 @@ require_once __DIR__ . '/includes/header.php';
                             </div>
 
                             <div class="col-12">
-                                <label for="student_address" class="form-label">Address <span class="required-mark" aria-hidden="true">*</span></label>
+                                <label for="student_address" class="form-label">العنوان <span class="required-mark" aria-hidden="true">*</span></label>
                                 <textarea id="student_address" name="address" rows="3" required
                                           class="form-control<?= isset($errors['address']) ? ' is-invalid' : '' ?>"
                                           data-validate-field="address"
@@ -183,13 +183,13 @@ require_once __DIR__ . '/includes/header.php';
                             </div>
 
                             <div class="col-12">
-                                <label for="student_picture" class="form-label">Replace profile picture</label>
+                                <label for="student_picture" class="form-label">استبدال الصورة الشخصية</label>
                                 <div class="image-preview-wrap mb-2">
                                     <div class="image-preview-frame" aria-hidden="true">
                                         <img id="studentImagePreview" class="d-none" alt="">
                                     </div>
                                     <div class="image-preview-meta">
-                                        <p class="small text-muted mb-0" id="studentImagePreviewHint">Leave empty to keep the current image. JPEG/PNG/WEBP, max 2&nbsp;MB.</p>
+                                        <p class="small text-muted mb-0" id="studentImagePreviewHint">اتركه فارغاً للإبقاء على الصورة الحالية. JPEG/PNG/WEBP، بحد أقصى 2&nbsp;ميغابايت.</p>
                                     </div>
                                 </div>
                                 <input type="file" id="student_picture" name="profile_picture"
@@ -203,8 +203,8 @@ require_once __DIR__ . '/includes/header.php';
                         </div>
 
                         <div class="form-actions mt-4">
-                            <button type="submit" class="btn btn-navy" data-loading-label="Saving…">Save changes</button>
-                            <a class="btn btn-outline-secondary" href="<?= e(base_url('view_students.php')) ?>">Cancel</a>
+                            <button type="submit" class="btn btn-navy" data-loading-label="جارٍ الحفظ…">حفظ التغييرات</button>
+                            <a class="btn btn-outline-secondary" href="<?= e(base_url('view_students.php')) ?>">إلغاء</a>
                         </div>
                     </form>
                 </div>

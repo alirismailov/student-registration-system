@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-define('APP_NAME', 'Student Registration System');
+define('APP_NAME', 'نظام تسجيل الطلاب');
 define('APP_ROOT', dirname(__DIR__));
 
 // Optional non-secret overrides (e.g. define('APP_ENV', 'production');).

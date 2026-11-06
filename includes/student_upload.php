@@ -89,18 +89,18 @@ function process_student_image_upload(?array $file): array
 
     $errorCode = (int) $file['error'];
     if ($errorCode !== UPLOAD_ERR_OK) {
-        return ['path' => null, 'error' => 'Image upload failed. Please try again.'];
+        return ['path' => null, 'error' => 'فشل رفع الصورة. يرجى المحاولة مرة أخرى.'];
     }
 
     $tmp = (string) ($file['tmp_name'] ?? '');
     $size = (int) ($file['size'] ?? 0);
 
     if ($tmp === '' || !is_uploaded_file($tmp)) {
-        return ['path' => null, 'error' => 'Invalid upload. Please try again.'];
+        return ['path' => null, 'error' => 'عملية رفع غير صالحة. يرجى المحاولة مرة أخرى.'];
     }
 
     if ($size <= 0 || $size > STUDENT_UPLOAD_MAX_BYTES) {
-        return ['path' => null, 'error' => 'Image must be 2 MB or smaller.'];
+        return ['path' => null, 'error' => 'يجب ألا يتجاوز حجم الصورة 2 ميغابايت.'];
     }
 
     $finfo = new finfo(FILEINFO_MIME_TYPE);
@@ -108,30 +108,30 @@ function process_student_image_upload(?array $file): array
     $map = student_upload_mime_map();
 
     if (!isset($map[$mime])) {
-        return ['path' => null, 'error' => 'Only JPEG, PNG, and WEBP images are allowed.'];
+        return ['path' => null, 'error' => 'يُسمح فقط بصور JPEG و PNG و WEBP.'];
     }
 
     $imageInfo = @getimagesize($tmp);
     if ($imageInfo === false) {
-        return ['path' => null, 'error' => 'The uploaded file is not a valid image.'];
+        return ['path' => null, 'error' => 'الملف المرفوع ليس صورة صالحة.'];
     }
 
     $detectedMime = (string) ($imageInfo['mime'] ?? '');
     if (!isset($map[$detectedMime]) || $detectedMime !== $mime) {
-        return ['path' => null, 'error' => 'The uploaded file is not a valid image.'];
+        return ['path' => null, 'error' => 'الملف المرفوع ليس صورة صالحة.'];
     }
 
     $ext = $map[$mime];
     $dir = student_upload_absolute_dir();
     if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
-        return ['path' => null, 'error' => 'Unable to store the image right now.'];
+        return ['path' => null, 'error' => 'تعذّر حفظ الصورة حالياً.'];
     }
 
     $filename = bin2hex(random_bytes(16)) . '.' . $ext;
     $destination = $dir . DIRECTORY_SEPARATOR . $filename;
 
     if (!move_uploaded_file($tmp, $destination)) {
-        return ['path' => null, 'error' => 'Unable to store the image right now.'];
+        return ['path' => null, 'error' => 'تعذّر حفظ الصورة حالياً.'];
     }
 
     @chmod($destination, 0644);

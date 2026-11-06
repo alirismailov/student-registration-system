@@ -10,7 +10,7 @@ init_session();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    flash_set('warning', 'Logout must be submitted using the Logout button.');
+    flash_set('warning', 'يجب تسجيل الخروج باستخدام زر تسجيل الخروج.');
     redirect_to(isAuthenticated() ? 'dashboard.php' : 'login.php');
 }
 
@@ -18,5 +18,5 @@ require_valid_csrf();
 
 logout_user();
 init_session();
-flash_set('success', 'You have been logged out.');
+flash_set('success', 'تم تسجيل خروجك.');
 redirect_to('login.php');

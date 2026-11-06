@@ -9,23 +9,23 @@ declare(strict_types=1);
             <div class="col-md-8">
                 <p class="mb-1 fw-semibold text-navy"><?= e(APP_NAME) ?></p>
                 <p class="mb-0 small text-muted">
-                    BWP501 course project — Syrian Virtual University.
-                    Secure authentication and student administration with search, pagination, and profile images.
+                    مشروع مقرر BWP501 — الجامعة الافتراضية السورية.
+                    مصادقة آمنة وإدارة للطلاب مع البحث وتقسيم الصفحات والصور الشخصية.
                 </p>
             </div>
             <div class="col-md-4 text-md-end">
                 <?php if (function_exists('isAuthenticated') && isAuthenticated()): ?>
-                    <a class="footer-link me-3" href="<?= e(base_url('dashboard.php')) ?>">Dashboard</a>
-                    <a class="footer-link me-3" href="<?= e(base_url('view_students.php')) ?>">Students</a>
-                    <a class="footer-link" href="<?= e(base_url('add_student.php')) ?>">Add</a>
+                    <a class="footer-link me-3" href="<?= e(base_url('dashboard.php')) ?>">لوحة التحكم</a>
+                    <a class="footer-link me-3" href="<?= e(base_url('view_students.php')) ?>">الطلاب</a>
+                    <a class="footer-link" href="<?= e(base_url('add_student.php')) ?>">إضافة</a>
                 <?php else: ?>
-                    <a class="footer-link me-3" href="<?= e(base_url('login.php')) ?>">Login</a>
-                    <a class="footer-link" href="<?= e(base_url('register.php')) ?>">Register</a>
+                    <a class="footer-link me-3" href="<?= e(base_url('login.php')) ?>">تسجيل الدخول</a>
+                    <a class="footer-link" href="<?= e(base_url('register.php')) ?>">إنشاء حساب</a>
                 <?php endif; ?>
             </div>
         </div>
         <p class="small text-muted mt-3 mb-0">
-            &copy; <span data-current-year></span> Academic administration demo — assignment use only.
+            &copy; <span data-current-year></span> نموذج للإدارة الأكاديمية — لأغراض الوظيفة فقط.
         </p>
     </div>
 </footer>

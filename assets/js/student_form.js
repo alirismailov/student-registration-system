@@ -96,7 +96,7 @@
           if (firstMessage) {
             announce(firstMessage);
           } else if (data && data.valid === true) {
-            announce('All fields look valid.');
+            announce('جميع الحقول صحيحة.');
           }
         })
         .catch(() => {
@@ -136,16 +136,16 @@
           previewImg.classList.add('d-none');
           previewImg.removeAttribute('src');
           if (previewHint) {
-            previewHint.textContent = 'No new image selected.';
+            previewHint.textContent = 'لم يتم اختيار صورة جديدة.';
           }
           return;
         }
         objectUrl = URL.createObjectURL(file);
         previewImg.src = objectUrl;
         previewImg.classList.remove('d-none');
-        previewImg.alt = 'Selected image preview';
+        previewImg.alt = 'معاينة الصورة المختارة';
         if (previewHint) {
-          previewHint.textContent = 'Preview only — the server will validate the file on submit.';
+          previewHint.textContent = 'معاينة فقط — سيتحقق الخادم من الملف عند الإرسال.';
         }
       });
     }

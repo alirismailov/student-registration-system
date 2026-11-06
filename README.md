@@ -2,6 +2,8 @@
 
 BWP501 — Syrian Virtual University.
 
+The web interface is in Arabic (right-to-left).
+
 PHP/MySQL student administration app: authentication, CRUD, profile images, search, sorting, pagination, AJAX validation, and a Bootstrap 5 UI.
 
  **Live Demo:** https://bwp501-hw-studentregsystem.infinityfreeapp.com/
@@ -37,7 +39,7 @@ HTML5, CSS3, Vanilla JS, Bootstrap 5.3, PHP 8.x, MariaDB/MySQL, PDO.
 
 ## Setup (local)
 
-1. Import `database/student_registration_system.sql` (or use existing DB).
+1. Import `database/student_registration_system.sql` (or use existing DB). For free hosting see `DEPLOY_INFINITYFREE.md`.
 2. Copy `config/database.local.php.example` → `config/database.local.php` and set credentials.
 3. Ensure Apache can serve the project (e.g. junction under `htdocs/ab_hasan`).
 4. Open the site URL above and register an account.

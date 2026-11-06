@@ -23,31 +23,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $passwordConfirm = (string) ($_POST['password_confirm'] ?? '');
 
     if ($username === '') {
-        $errors['username'] = 'Username is required.';
+        $errors['username'] = 'اسم المستخدم مطلوب.';
     } elseif (mb_strlen($username) > 100) {
-        $errors['username'] = 'Username must be at most 100 characters.';
+        $errors['username'] = 'يجب ألا يتجاوز اسم المستخدم 100 حرف.';
     } elseif (!preg_match('/^[A-Za-z0-9_.-]+$/', $username)) {
-        $errors['username'] = 'Username may only contain letters, numbers, dots, underscores, and hyphens.';
+        $errors['username'] = 'يمكن أن يحتوي اسم المستخدم على أحرف إنجليزية وأرقام ونقاط وشرطات سفلية وشرطات فقط.';
     }
 
     if ($email === '') {
-        $errors['email'] = 'Email is required.';
+        $errors['email'] = 'البريد الإلكتروني مطلوب.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors['email'] = 'Please enter a valid email address.';
+        $errors['email'] = 'يرجى إدخال بريد إلكتروني صحيح.';
     } elseif (mb_strlen($email) > 100) {
-        $errors['email'] = 'Email must be at most 100 characters.';
+        $errors['email'] = 'يجب ألا يتجاوز البريد الإلكتروني 100 حرف.';
     }
 
     if ($password === '') {
-        $errors['password'] = 'Password is required.';
+        $errors['password'] = 'كلمة المرور مطلوبة.';
     } elseif (strlen($password) < 8) {
-        $errors['password'] = 'Password must be at least 8 characters.';
+        $errors['password'] = 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.';
     }
 
     if ($passwordConfirm === '') {
-        $errors['password_confirm'] = 'Please confirm your password.';
+        $errors['password_confirm'] = 'يرجى تأكيد كلمة المرور.';
     } elseif ($password !== $passwordConfirm) {
-        $errors['password_confirm'] = 'Password confirmation does not match.';
+        $errors['password_confirm'] = 'تأكيد كلمة المرور غير مطابق.';
     }
 
     if ($errors === []) {
@@ -67,10 +67,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($existing) {
                 if (strcasecmp((string) $existing['username'], $username) === 0) {
-                    $errors['username'] = 'This username is already taken.';
+                    $errors['username'] = 'اسم المستخدم هذا مستخدم مسبقاً.';
                 }
                 if (strcasecmp((string) $existing['email'], $email) === 0) {
-                    $errors['email'] = 'This email is already registered.';
+                    $errors['email'] = 'هذا البريد الإلكتروني مسجل مسبقاً.';
                 }
             }
 
@@ -90,25 +90,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'password' => $hash,
                 ]);
 
-                flash_set('success', 'Registration successful. Please log in.');
+                flash_set('success', 'تم إنشاء الحساب بنجاح. يرجى تسجيل الدخول.');
                 redirect_to('login.php');
             }
         } catch (PDOException $e) {
             error_log('Registration PDO error: ' . $e->getMessage());
             if ($e->getCode() === '23000' || str_contains($e->getMessage(), '23000')) {
-                $errors['form'] = 'Username or email is already registered.';
+                $errors['form'] = 'اسم المستخدم أو البريد الإلكتروني مسجل مسبقاً.';
             } else {
-                $errors['form'] = 'Unable to complete registration. Please try again later.';
+                $errors['form'] = 'تعذّر إكمال التسجيل. يرجى المحاولة لاحقاً.';
             }
         } catch (Throwable $e) {
             error_log('Registration error: ' . $e->getMessage());
-            $errors['form'] = 'Unable to complete registration. Please try again later.';
+            $errors['form'] = 'تعذّر إكمال التسجيل. يرجى المحاولة لاحقاً.';
         }
     }
 }
 
 $currentPage = 'register';
-$pageTitle = 'Register | Student Registration System';
+$pageTitle = 'إنشاء حساب | نظام تسجيل الطلاب';
 $bodyClass = 'page-auth app-public';
 
 require_once __DIR__ . '/includes/header.php';
@@ -119,20 +119,20 @@ require_once __DIR__ . '/includes/header.php';
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
                 <div class="panel auth-panel">
-                    <p class="auth-brand mb-0">Student Registration</p>
-                    <h1 class="h3 text-navy mb-2">Create an account</h1>
-                    <p class="text-muted mb-4">Register with a username, email, and password to manage students.</p>
+                    <p class="auth-brand mb-0">تسجيل الطلاب</p>
+                    <h1 class="h3 text-navy mb-2">إنشاء حساب جديد</h1>
+                    <p class="text-muted mb-4">سجّل باستخدام اسم مستخدم وبريد إلكتروني وكلمة مرور لإدارة الطلاب.</p>
 
                     <?php if (isset($errors['form'])): ?>
                         <div class="alert alert-danger" role="alert"><?= e($errors['form']) ?></div>
                     <?php endif; ?>
 
                     <form method="post" action="<?= e(base_url('register.php')) ?>" novalidate
-                          aria-label="Registration form" id="registerForm" data-submit-once>
+                          aria-label="نموذج إنشاء الحساب" id="registerForm" data-submit-once>
                         <?= csrf_field() ?>
 
                         <div class="mb-3">
-                            <label for="reg_username" class="form-label">Username <span class="required-mark" aria-hidden="true">*</span></label>
+                            <label for="reg_username" class="form-label">اسم المستخدم <span class="required-mark" aria-hidden="true">*</span></label>
                             <input type="text" class="form-control<?= isset($errors['username']) ? ' is-invalid' : '' ?>"
                                    id="reg_username" name="username" value="<?= e($username) ?>"
                                    autocomplete="username" maxlength="100" required
@@ -143,7 +143,7 @@ require_once __DIR__ . '/includes/header.php';
                         </div>
 
                         <div class="mb-3">
-                            <label for="reg_email" class="form-label">Email <span class="required-mark" aria-hidden="true">*</span></label>
+                            <label for="reg_email" class="form-label">البريد الإلكتروني <span class="required-mark" aria-hidden="true">*</span></label>
                             <input type="email" class="form-control<?= isset($errors['email']) ? ' is-invalid' : '' ?>"
                                    id="reg_email" name="email" value="<?= e($email) ?>"
                                    autocomplete="email" maxlength="100" required
@@ -154,7 +154,7 @@ require_once __DIR__ . '/includes/header.php';
                         </div>
 
                         <div class="mb-3">
-                            <label for="reg_password" class="form-label">Password <span class="required-mark" aria-hidden="true">*</span></label>
+                            <label for="reg_password" class="form-label">كلمة المرور <span class="required-mark" aria-hidden="true">*</span></label>
                             <div class="input-group">
                                 <input type="password"
                                        class="form-control<?= isset($errors['password']) ? ' is-invalid' : '' ?>"
@@ -163,16 +163,16 @@ require_once __DIR__ . '/includes/header.php';
                                        aria-describedby="reg_password_help"
                                        aria-invalid="<?= isset($errors['password']) ? 'true' : 'false' ?>">
                                 <button class="btn btn-outline-secondary" type="button" data-toggle-password="reg_password"
-                                        aria-pressed="false" aria-label="Show password">Show</button>
+                                        aria-pressed="false" aria-label="إظهار كلمة المرور">إظهار</button>
                             </div>
-                            <div class="form-text" id="reg_password_help">At least 8 characters.</div>
+                            <div class="form-text" id="reg_password_help">8 أحرف على الأقل.</div>
                             <?php if (isset($errors['password'])): ?>
                                 <div class="invalid-feedback d-block"><?= e($errors['password']) ?></div>
                             <?php endif; ?>
                         </div>
 
                         <div class="mb-4">
-                            <label for="reg_password_confirm" class="form-label">Confirm password <span class="required-mark" aria-hidden="true">*</span></label>
+                            <label for="reg_password_confirm" class="form-label">تأكيد كلمة المرور <span class="required-mark" aria-hidden="true">*</span></label>
                             <div class="input-group">
                                 <input type="password"
                                        class="form-control<?= isset($errors['password_confirm']) ? ' is-invalid' : '' ?>"
@@ -182,19 +182,19 @@ require_once __DIR__ . '/includes/header.php';
                                 <button class="btn btn-outline-secondary" type="button"
                                         data-toggle-password="reg_password_confirm"
                                         aria-pressed="false"
-                                        aria-label="Show confirm password">Show</button>
+                                        aria-label="إظهار تأكيد كلمة المرور">إظهار</button>
                             </div>
                             <?php if (isset($errors['password_confirm'])): ?>
                                 <div class="invalid-feedback d-block"><?= e($errors['password_confirm']) ?></div>
                             <?php endif; ?>
                         </div>
 
-                        <button type="submit" class="btn btn-navy w-100" data-loading-label="Creating account…">Register</button>
+                        <button type="submit" class="btn btn-navy w-100" data-loading-label="جارٍ إنشاء الحساب…">إنشاء الحساب</button>
                     </form>
 
                     <p class="small text-muted mt-3 mb-0">
-                        Already registered?
-                        <a href="<?= e(base_url('login.php')) ?>">Login</a>
+                        لديك حساب بالفعل؟
+                        <a href="<?= e(base_url('login.php')) ?>">تسجيل الدخول</a>
                     </p>
                 </div>
             </div>

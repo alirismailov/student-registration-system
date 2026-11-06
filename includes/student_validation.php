@@ -24,31 +24,31 @@ function validate_student_input(array $input): array
     $errors = [];
 
     if ($name === '') {
-        $errors['name'] = 'Full name is required.';
+        $errors['name'] = 'الاسم الكامل مطلوب.';
     } elseif (mb_strlen($name) > 100) {
-        $errors['name'] = 'Full name must be at most 100 characters.';
+        $errors['name'] = 'يجب ألا يتجاوز الاسم الكامل 100 حرف.';
     }
 
     if ($email === '') {
-        $errors['email'] = 'Email is required.';
+        $errors['email'] = 'البريد الإلكتروني مطلوب.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors['email'] = 'Please enter a valid email address.';
+        $errors['email'] = 'يرجى إدخال بريد إلكتروني صحيح.';
     } elseif (mb_strlen($email) > 100) {
-        $errors['email'] = 'Email must be at most 100 characters.';
+        $errors['email'] = 'يجب ألا يتجاوز البريد الإلكتروني 100 حرف.';
     }
 
     if ($phoneNormalized === '') {
-        $errors['phone'] = 'Phone number is required.';
+        $errors['phone'] = 'رقم الهاتف مطلوب.';
     } elseif (mb_strlen($phoneNormalized) > 15) {
-        $errors['phone'] = 'Phone number must be at most 15 characters.';
+        $errors['phone'] = 'يجب ألا يتجاوز رقم الهاتف 15 حرفاً.';
     } elseif (!preg_match('/^\+?[0-9][0-9\s\-()]{5,14}$/', $phoneNormalized)) {
-        $errors['phone'] = 'Enter a valid phone number (digits, spaces, +, -, or parentheses).';
+        $errors['phone'] = 'أدخل رقم هاتف صحيحاً (أرقام، مسافات، +، -، أو أقواس).';
     }
 
     if ($address === '') {
-        $errors['address'] = 'Address is required.';
+        $errors['address'] = 'العنوان مطلوب.';
     } elseif (mb_strlen($address) > 5000) {
-        $errors['address'] = 'Address is too long.';
+        $errors['address'] = 'العنوان طويل جداً.';
     }
 
     return [

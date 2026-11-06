@@ -14,3 +14,6 @@ uploads/students/*
 
 # Optional local/production flags (no secrets ideally)
 config/app.local.php
+
+# Build outputs (deploy zip, patches, screenshots)
+dist/

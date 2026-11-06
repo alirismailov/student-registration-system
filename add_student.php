@@ -41,12 +41,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'profile_picture' => $imagePath,
             ]);
 
-            flash_set('success', 'Student added successfully.');
+            flash_set('success', 'تمت إضافة الطالب بنجاح.');
             redirect_to('view_students.php');
         } catch (Throwable $e) {
             error_log('Add student failed: ' . $e->getMessage());
             remove_orphan_upload($imagePath);
-            $errors['form'] = 'Unable to save the student. Please try again later.';
+            $errors['form'] = 'تعذّر حفظ بيانات الطالب. يرجى المحاولة لاحقاً.';
         }
     } else {
         remove_orphan_upload($imagePath);
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $currentPage = 'add';
-$pageTitle = 'Add Student | Student Registration System';
+$pageTitle = 'إضافة طالب | نظام تسجيل الطلاب';
 
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -63,11 +63,11 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
         <div class="page-header d-flex flex-wrap justify-content-between align-items-start gap-2">
             <div>
-                <p class="page-kicker">Students</p>
-                <h1>Add student</h1>
-                <p class="page-desc">Enter student details. Fields marked with * are required. Profile picture is optional.</p>
+                <p class="page-kicker">الطلاب</p>
+                <h1>إضافة طالب</h1>
+                <p class="page-desc">أدخل بيانات الطالب. الحقول المميزة بـ * مطلوبة. الصورة الشخصية اختيارية.</p>
             </div>
-            <a class="btn btn-outline-navy" href="<?= e(base_url('view_students.php')) ?>">Back to list</a>
+            <a class="btn btn-outline-navy" href="<?= e(base_url('view_students.php')) ?>">العودة إلى القائمة</a>
         </div>
 
         <div class="row justify-content-center">
@@ -86,7 +86,7 @@ require_once __DIR__ . '/includes/header.php';
 
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label for="student_name" class="form-label">Full name <span class="required-mark" aria-hidden="true">*</span></label>
+                                <label for="student_name" class="form-label">الاسم الكامل <span class="required-mark" aria-hidden="true">*</span></label>
                                 <input type="text" id="student_name" name="name" maxlength="100" required
                                        class="form-control<?= isset($errors['name']) ? ' is-invalid' : '' ?>"
                                        value="<?= e($name) ?>" autocomplete="name" data-validate-field="name"
@@ -95,7 +95,7 @@ require_once __DIR__ . '/includes/header.php';
                             </div>
 
                             <div class="col-md-6">
-                                <label for="student_email" class="form-label">Email <span class="required-mark" aria-hidden="true">*</span></label>
+                                <label for="student_email" class="form-label">البريد الإلكتروني <span class="required-mark" aria-hidden="true">*</span></label>
                                 <input type="email" id="student_email" name="email" maxlength="100" required
                                        class="form-control<?= isset($errors['email']) ? ' is-invalid' : '' ?>"
                                        value="<?= e($email) ?>" autocomplete="email" data-validate-field="email"
@@ -104,18 +104,18 @@ require_once __DIR__ . '/includes/header.php';
                             </div>
 
                             <div class="col-md-6">
-                                <label for="student_phone" class="form-label">Phone number <span class="required-mark" aria-hidden="true">*</span></label>
+                                <label for="student_phone" class="form-label">رقم الهاتف <span class="required-mark" aria-hidden="true">*</span></label>
                                 <input type="tel" id="student_phone" name="phone" maxlength="15" required
                                        class="form-control<?= isset($errors['phone']) ? ' is-invalid' : '' ?>"
                                        value="<?= e($phone) ?>" autocomplete="tel" data-validate-field="phone"
                                        aria-describedby="student_phone_help"
                                        aria-invalid="<?= isset($errors['phone']) ? 'true' : 'false' ?>">
-                                <div class="form-text" id="student_phone_help">Up to 15 characters. Digits, spaces, +, -, ( ) allowed.</div>
+                                <div class="form-text" id="student_phone_help">حتى 15 حرفاً. يُسمح بالأرقام والمسافات و + و - و ( ).</div>
                                 <div class="invalid-feedback" data-error-for="phone"><?= isset($errors['phone']) ? e($errors['phone']) : '' ?></div>
                             </div>
 
                             <div class="col-12">
-                                <label for="student_address" class="form-label">Address <span class="required-mark" aria-hidden="true">*</span></label>
+                                <label for="student_address" class="form-label">العنوان <span class="required-mark" aria-hidden="true">*</span></label>
                                 <textarea id="student_address" name="address" rows="3" required
                                           class="form-control<?= isset($errors['address']) ? ' is-invalid' : '' ?>"
                                           data-validate-field="address"
@@ -124,13 +124,13 @@ require_once __DIR__ . '/includes/header.php';
                             </div>
 
                             <div class="col-12">
-                                <label for="student_picture" class="form-label">Profile picture <span class="text-muted fw-normal">(optional)</span></label>
+                                <label for="student_picture" class="form-label">الصورة الشخصية <span class="text-muted fw-normal">(اختياري)</span></label>
                                 <div class="image-preview-wrap mb-2">
                                     <div class="image-preview-frame" aria-hidden="true">
                                         <img id="studentImagePreview" class="d-none" alt="">
                                     </div>
                                     <div class="image-preview-meta">
-                                        <p class="small text-muted mb-0" id="studentImagePreviewHint">JPEG, PNG, or WEBP · max 2&nbsp;MB.</p>
+                                        <p class="small text-muted mb-0" id="studentImagePreviewHint">JPEG أو PNG أو WEBP · بحد أقصى 2&nbsp;ميغابايت.</p>
                                     </div>
                                 </div>
                                 <input type="file" id="student_picture" name="profile_picture"
@@ -144,8 +144,8 @@ require_once __DIR__ . '/includes/header.php';
                         </div>
 
                         <div class="form-actions mt-4">
-                            <button type="submit" class="btn btn-navy" data-loading-label="Saving…">Save student</button>
-                            <a class="btn btn-outline-secondary" href="<?= e(base_url('view_students.php')) ?>">Cancel</a>
+                            <button type="submit" class="btn btn-navy" data-loading-label="جارٍ الحفظ…">حفظ الطالب</button>
+                            <a class="btn btn-outline-secondary" href="<?= e(base_url('view_students.php')) ?>">إلغاء</a>
                         </div>
                     </form>
                 </div>

@@ -7,7 +7,7 @@ require_once __DIR__ . '/includes/student_upload.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    flash_set('warning', 'Students can only be deleted using the Delete confirmation form.');
+    flash_set('warning', 'لا يمكن حذف الطلاب إلا من خلال نموذج تأكيد الحذف.');
     redirect_to('view_students.php');
 }
 
@@ -15,7 +15,7 @@ require_valid_csrf();
 
 $id = parse_positive_int($_POST['id'] ?? null);
 if ($id === null) {
-    flash_set('danger', 'Invalid student ID.');
+    flash_set('danger', 'رقم الطالب غير صالح.');
     redirect_to('view_students.php');
 }
 
@@ -24,7 +24,7 @@ try {
     $student = find_student_by_id($pdo, $id);
 
     if ($student === null) {
-        flash_set('warning', 'Student not found or already deleted.');
+        flash_set('warning', 'لم يتم العثور على الطالب أو أنه حُذف مسبقاً.');
         redirect_to('view_students.php');
     }
 
@@ -35,10 +35,10 @@ try {
 
     delete_managed_student_image($pdo, $picture, null);
 
-    flash_set('success', 'Student deleted successfully.');
+    flash_set('success', 'تم حذف الطالب بنجاح.');
     redirect_to('view_students.php');
 } catch (Throwable $e) {
     error_log('Delete student failed: ' . $e->getMessage());
-    flash_set('danger', 'Unable to delete the student. Please try again later.');
+    flash_set('danger', 'تعذّر حذف الطالب. يرجى المحاولة لاحقاً.');
     redirect_to('view_students.php');
 }
