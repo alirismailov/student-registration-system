@@ -6,7 +6,7 @@ BWP501 — الجامعة الافتراضية السورية.
 
 تطبيق PHP/MySQL لإدارة الطلاب: المصادقة، والإضافة والعرض والتعديل والحذف (CRUD)، والصور الشخصية، والبحث، والفرز، وتقسيم الصفحات، والتحقق عبر AJAX، وواجهة مستخدم مبنية على Bootstrap 5.
 
- **العرض المباشر:** https://bwp501-hw-studentregsystem.infinityfreeapp.com/
+ **العرض المباشر:** https://bwp501-hw--studentregsystem.infinityfreeapp.com/
 
 ## التقنيات المستخدمة
 
@@ -18,7 +18,7 @@ HTML5، CSS3، Vanilla JS، Bootstrap 5.3، PHP 8.x، MariaDB/MySQL، PDO.
 |------|--------|
 | التطوير المحلي | **مكتمل** |
 | النشر العام | **مكتمل** |
-| الرابط العام | **[متاح](https://bwp501-hw-studentregsystem.infinityfreeapp.com/)** |
+| الرابط العام | **[متاح](https://bwp501-hw--studentregsystem.infinityfreeapp.com/)** |
 | التقرير النهائي | **مكتمل** |
 | التسليم على Moodle | **مكتمل** |
 

@@ -29,12 +29,12 @@ require_once __DIR__ . '/includes/header.php';
         <div class="developer-names">
             <span class="developer-name">
                 <span class="developer-icon">✦</span>
-                ali_191708
+                191708 - علي رافع اسماعيل
             </span>
 
             <span class="developer-name">
                 <span class="developer-icon">✦</span>
-                jawa_259605
+                259605 - جوى هيثم عثمان
             </span>
         </div>
     </div>
