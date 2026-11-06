@@ -1,0 +1,1654 @@
+From: alirismailov <ali.r.ismailov@gmail.com>
+Date: Fri, 6 Nov 2026 14:00:47 +0000
+Subject: Translate web interface to Arabic with RTL layout
+
+---
+ add_student.php                 |  32 +++++-----
+ api/validate_student.php        |   8 +--
+ assets/css/style.css            |   2 +-
+ assets/js/app.js                |   6 +-
+ assets/js/student_form.js       |   8 +--
+ config/app.php                  |   2 +-
+ dashboard.php                   |  30 +++++-----
+ delete_student.php              |  10 ++--
+ includes/auth.php               |   6 +-
+ includes/csrf.php               |   2 +-
+ includes/footer.php             |  16 ++---
+ includes/header.php             |  34 ++++++-----
+ includes/student_upload.php     |  16 ++---
+ includes/student_validation.php |  20 +++----
+ index.php                       |  68 +++++++++++-----------
+ login.php                       |  30 +++++-----
+ logout.php                      |   4 +-
+ register.php                    |  62 ++++++++++----------
+ update_student.php              |  46 +++++++--------
+ view_students.php               | 100 ++++++++++++++++----------------
+ 20 files changed, 252 insertions(+), 250 deletions(-)
+
+diff --git a/add_student.php b/add_student.php
+index f5dc2ea..0e2cc10 100644
+--- a/add_student.php
++++ b/add_student.php
+@@ -41,12 +41,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                 'profile_picture' => $imagePath,
+             ]);
+ 
+-            flash_set('success', 'Student added successfully.');
++            flash_set('success', 'تمت إضافة الطالب بنجاح.');
+             redirect_to('view_students.php');
+         } catch (Throwable $e) {
+             error_log('Add student failed: ' . $e->getMessage());
+             remove_orphan_upload($imagePath);
+-            $errors['form'] = 'Unable to save the student. Please try again later.';
++            $errors['form'] = 'تعذّر حفظ بيانات الطالب. يرجى المحاولة لاحقاً.';
+         }
+     } else {
+         remove_orphan_upload($imagePath);
+@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+ }
+ 
+ $currentPage = 'add';
+-$pageTitle = 'Add Student | Student Registration System';
++$pageTitle = 'إضافة طالب | نظام تسجيل الطلاب';
+ 
+ require_once __DIR__ . '/includes/header.php';
+ ?>
+@@ -63,11 +63,11 @@ require_once __DIR__ . '/includes/header.php';
+     <div class="container">
+         <div class="page-header d-flex flex-wrap justify-content-between align-items-start gap-2">
+             <div>
+-                <p class="page-kicker">Students</p>
+-                <h1>Add student</h1>
+-                <p class="page-desc">Enter student details. Fields marked with * are required. Profile picture is optional.</p>
++                <p class="page-kicker">الطلاب</p>
++                <h1>إضافة طالب</h1>
++                <p class="page-desc">أدخل بيانات الطالب. الحقول المميزة بـ * مطلوبة. الصورة الشخصية اختيارية.</p>
+             </div>
+-            <a class="btn btn-outline-navy" href="<?= e(base_url('view_students.php')) ?>">Back to list</a>
++            <a class="btn btn-outline-navy" href="<?= e(base_url('view_students.php')) ?>">العودة إلى القائمة</a>
+         </div>
+ 
+         <div class="row justify-content-center">
+@@ -86,7 +86,7 @@ require_once __DIR__ . '/includes/header.php';
+ 
+                         <div class="row g-3">
+                             <div class="col-md-6">
+-                                <label for="student_name" class="form-label">Full name <span class="required-mark" aria-hidden="true">*</span></label>
++                                <label for="student_name" class="form-label">الاسم الكامل <span class="required-mark" aria-hidden="true">*</span></label>
+                                 <input type="text" id="student_name" name="name" maxlength="100" required
+                                        class="form-control<?= isset($errors['name']) ? ' is-invalid' : '' ?>"
+                                        value="<?= e($name) ?>" autocomplete="name" data-validate-field="name"
+@@ -95,7 +95,7 @@ require_once __DIR__ . '/includes/header.php';
+                             </div>
+ 
+                             <div class="col-md-6">
+-                                <label for="student_email" class="form-label">Email <span class="required-mark" aria-hidden="true">*</span></label>
++                                <label for="student_email" class="form-label">البريد الإلكتروني <span class="required-mark" aria-hidden="true">*</span></label>
+                                 <input type="email" id="student_email" name="email" maxlength="100" required
+                                        class="form-control<?= isset($errors['email']) ? ' is-invalid' : '' ?>"
+                                        value="<?= e($email) ?>" autocomplete="email" data-validate-field="email"
+@@ -104,18 +104,18 @@ require_once __DIR__ . '/includes/header.php';
+                             </div>
+ 
+                             <div class="col-md-6">
+-                                <label for="student_phone" class="form-label">Phone number <span class="required-mark" aria-hidden="true">*</span></label>
++                                <label for="student_phone" class="form-label">رقم الهاتف <span class="required-mark" aria-hidden="true">*</span></label>
+                                 <input type="tel" id="student_phone" name="phone" maxlength="15" required
+                                        class="form-control<?= isset($errors['phone']) ? ' is-invalid' : '' ?>"
+                                        value="<?= e($phone) ?>" autocomplete="tel" data-validate-field="phone"
+                                        aria-describedby="student_phone_help"
+                                        aria-invalid="<?= isset($errors['phone']) ? 'true' : 'false' ?>">
+-                                <div class="form-text" id="student_phone_help">Up to 15 characters. Digits, spaces, +, -, ( ) allowed.</div>
++                                <div class="form-text" id="student_phone_help">حتى 15 حرفاً. يُسمح بالأرقام والمسافات و + و - و ( ).</div>
+                                 <div class="invalid-feedback" data-error-for="phone"><?= isset($errors['phone']) ? e($errors['phone']) : '' ?></div>
+                             </div>
+ 
+                             <div class="col-12">
+-                                <label for="student_address" class="form-label">Address <span class="required-mark" aria-hidden="true">*</span></label>
++                                <label for="student_address" class="form-label">العنوان <span class="required-mark" aria-hidden="true">*</span></label>
+                                 <textarea id="student_address" name="address" rows="3" required
+                                           class="form-control<?= isset($errors['address']) ? ' is-invalid' : '' ?>"
+                                           data-validate-field="address"
+@@ -124,13 +124,13 @@ require_once __DIR__ . '/includes/header.php';
+                             </div>
+ 
+                             <div class="col-12">
+-                                <label for="student_picture" class="form-label">Profile picture <span class="text-muted fw-normal">(optional)</span></label>
++                                <label for="student_picture" class="form-label">الصورة الشخصية <span class="text-muted fw-normal">(اختياري)</span></label>
+                                 <div class="image-preview-wrap mb-2">
+                                     <div class="image-preview-frame" aria-hidden="true">
+                                         <img id="studentImagePreview" class="d-none" alt="">
+                                     </div>
+                                     <div class="image-preview-meta">
+-                                        <p class="small text-muted mb-0" id="studentImagePreviewHint">JPEG, PNG, or WEBP · max 2&nbsp;MB.</p>
++                                        <p class="small text-muted mb-0" id="studentImagePreviewHint">JPEG أو PNG أو WEBP · بحد أقصى 2&nbsp;ميغابايت.</p>
+                                     </div>
+                                 </div>
+                                 <input type="file" id="student_picture" name="profile_picture"
+@@ -144,8 +144,8 @@ require_once __DIR__ . '/includes/header.php';
+                         </div>
+ 
+                         <div class="form-actions mt-4">
+-                            <button type="submit" class="btn btn-navy" data-loading-label="Saving…">Save student</button>
+-                            <a class="btn btn-outline-secondary" href="<?= e(base_url('view_students.php')) ?>">Cancel</a>
++                            <button type="submit" class="btn btn-navy" data-loading-label="جارٍ الحفظ…">حفظ الطالب</button>
++                            <a class="btn btn-outline-secondary" href="<?= e(base_url('view_students.php')) ?>">إلغاء</a>
+                         </div>
+                     </form>
+                 </div>
+diff --git a/api/validate_student.php b/api/validate_student.php
+index 14321af..445e9d8 100644
+--- a/api/validate_student.php
++++ b/api/validate_student.php
+@@ -18,13 +18,13 @@ init_session();
+ 
+ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+     http_response_code(405);
+-    echo json_encode(['valid' => false, 'errors' => ['form' => 'Method not allowed.']]);
++    echo json_encode(['valid' => false, 'errors' => ['form' => 'الطريقة غير مسموح بها.']]);
+     exit;
+ }
+ 
+ if (!isAuthenticated()) {
+     http_response_code(401);
+-    echo json_encode(['valid' => false, 'errors' => ['form' => 'Authentication required.']]);
++    echo json_encode(['valid' => false, 'errors' => ['form' => 'يلزم تسجيل الدخول.']]);
+     exit;
+ }
+ 
+@@ -32,14 +32,14 @@ if (!isAuthenticated()) {
+ $userId = currentUserId();
+ if ($userId === null) {
+     http_response_code(401);
+-    echo json_encode(['valid' => false, 'errors' => ['form' => 'Authentication required.']]);
++    echo json_encode(['valid' => false, 'errors' => ['form' => 'يلزم تسجيل الدخول.']]);
+     exit;
+ }
+ 
+ $token = isset($_POST['_csrf']) ? (string) $_POST['_csrf'] : null;
+ if (!csrf_verify($token)) {
+     http_response_code(403);
+-    echo json_encode(['valid' => false, 'errors' => ['form' => 'Invalid session token. Refresh and try again.']]);
++    echo json_encode(['valid' => false, 'errors' => ['form' => 'رمز الجلسة غير صالح. حدّث الصفحة وحاول مرة أخرى.']]);
+     exit;
+ }
+ 
+diff --git a/assets/css/style.css b/assets/css/style.css
+index de7823c..d45b6f4 100644
+--- a/assets/css/style.css
++++ b/assets/css/style.css
+@@ -40,7 +40,7 @@ body {
+   flex-direction: column;
+   background: var(--bg);
+   color: var(--text);
+-  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
++  font-family: "Cairo", "Segoe UI", Tahoma, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+   font-size: 1rem;
+   line-height: 1.55;
+   -webkit-font-smoothing: antialiased;
+diff --git a/assets/js/app.js b/assets/js/app.js
+index d731927..26eccbc 100644
+--- a/assets/js/app.js
++++ b/assets/js/app.js
+@@ -25,9 +25,9 @@
+         }
+         const showing = input.type === 'text';
+         input.type = showing ? 'password' : 'text';
+-        btn.textContent = showing ? 'Show' : 'Hide';
++        btn.textContent = showing ? 'إظهار' : 'إخفاء';
+         btn.setAttribute('aria-pressed', showing ? 'false' : 'true');
+-        btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
++        btn.setAttribute('aria-label', showing ? 'إظهار كلمة المرور' : 'إخفاء كلمة المرور');
+       });
+     });
+ 
+@@ -42,7 +42,7 @@
+             el.disabled = true;
+             if (el instanceof HTMLButtonElement && !el.dataset.originalLabel) {
+               el.dataset.originalLabel = el.textContent || '';
+-              el.textContent = el.dataset.loadingLabel || 'Please wait…';
++              el.textContent = el.dataset.loadingLabel || 'يرجى الانتظار…';
+             }
+           }
+         });
+diff --git a/assets/js/student_form.js b/assets/js/student_form.js
+index b9e77c7..a813c12 100644
+--- a/assets/js/student_form.js
++++ b/assets/js/student_form.js
+@@ -96,7 +96,7 @@
+           if (firstMessage) {
+             announce(firstMessage);
+           } else if (data && data.valid === true) {
+-            announce('All fields look valid.');
++            announce('جميع الحقول صحيحة.');
+           }
+         })
+         .catch(() => {
+@@ -136,16 +136,16 @@
+           previewImg.classList.add('d-none');
+           previewImg.removeAttribute('src');
+           if (previewHint) {
+-            previewHint.textContent = 'No new image selected.';
++            previewHint.textContent = 'لم يتم اختيار صورة جديدة.';
+           }
+           return;
+         }
+         objectUrl = URL.createObjectURL(file);
+         previewImg.src = objectUrl;
+         previewImg.classList.remove('d-none');
+-        previewImg.alt = 'Selected image preview';
++        previewImg.alt = 'معاينة الصورة المختارة';
+         if (previewHint) {
+-          previewHint.textContent = 'Preview only — the server will validate the file on submit.';
++          previewHint.textContent = 'معاينة فقط — سيتحقق الخادم من الملف عند الإرسال.';
+         }
+       });
+     }
+diff --git a/config/app.php b/config/app.php
+index 225418b..764fd21 100644
+--- a/config/app.php
++++ b/config/app.php
+@@ -6,7 +6,7 @@
+ 
+ declare(strict_types=1);
+ 
+-define('APP_NAME', 'Student Registration System');
++define('APP_NAME', 'نظام تسجيل الطلاب');
+ define('APP_ROOT', dirname(__DIR__));
+ 
+ // Optional non-secret overrides (e.g. define('APP_ENV', 'production');).
+diff --git a/dashboard.php b/dashboard.php
+index 08f658b..a9a5f3b 100644
+--- a/dashboard.php
++++ b/dashboard.php
+@@ -3,7 +3,7 @@ declare(strict_types=1);
+ 
+ require_once __DIR__ . '/includes/auth_guard.php';
+ 
+-$username = currentUsername() ?? 'User';
++$username = currentUsername() ?? 'مستخدم';
+ $studentCount = null;
+ 
+ try {
+@@ -13,7 +13,7 @@ try {
+ }
+ 
+ $currentPage = 'dashboard';
+-$pageTitle = 'Dashboard | Student Registration System';
++$pageTitle = 'لوحة التحكم | نظام تسجيل الطلاب';
+ 
+ require_once __DIR__ . '/includes/header.php';
+ ?>
+@@ -22,27 +22,27 @@ require_once __DIR__ . '/includes/header.php';
+     <div class="container">
+         <div class="page-header d-flex flex-wrap justify-content-between align-items-start gap-3">
+             <div>
+-                <p class="page-kicker">Administration</p>
+-                <h1>Welcome, <?= e($username) ?></h1>
+-                <p class="page-desc">Manage student records from one place. Use the shortcuts below to add or browse students.</p>
++                <p class="page-kicker">الإدارة</p>
++                <h1>مرحباً، <?= e($username) ?></h1>
++                <p class="page-desc">أدر سجلات الطلاب من مكان واحد. استخدم الاختصارات أدناه لإضافة الطلاب أو تصفحهم.</p>
+             </div>
+         </div>
+ 
+         <div class="row g-3 mb-4">
+             <div class="col-sm-6 col-lg-4">
+                 <div class="stat-card">
+-                    <div class="stat-label">Students on record</div>
++                    <div class="stat-label">عدد الطلاب المسجلين</div>
+                     <div class="stat-value">
+                         <?= $studentCount !== null ? e((string) $studentCount) : '—' ?>
+                     </div>
+-                    <p class="small text-muted mb-0 mt-2">Live count from the database.</p>
++                    <p class="small text-muted mb-0 mt-2">عدد مباشر من قاعدة البيانات.</p>
+                 </div>
+             </div>
+             <div class="col-sm-6 col-lg-4">
+                 <div class="stat-card">
+-                    <div class="stat-label">Signed in as</div>
++                    <div class="stat-label">مسجَّل الدخول باسم</div>
+                     <div class="stat-value" style="font-size:1.25rem;"><?= e($username) ?></div>
+-                    <p class="small text-muted mb-0 mt-2">Session-protected account.</p>
++                    <p class="small text-muted mb-0 mt-2">حساب محمي بجلسة.</p>
+                 </div>
+             </div>
+         </div>
+@@ -50,16 +50,16 @@ require_once __DIR__ . '/includes/header.php';
+         <div class="row g-4">
+             <div class="col-md-6">
+                 <div class="action-card">
+-                    <h3>View students</h3>
+-                    <p>Search, sort, and browse the student register with pagination.</p>
+-                    <a class="btn btn-outline-navy" href="<?= e(base_url('view_students.php')) ?>">Open student list</a>
++                    <h3>عرض الطلاب</h3>
++                    <p>ابحث في سجل الطلاب وافرزه وتصفحه مع تقسيم الصفحات.</p>
++                    <a class="btn btn-outline-navy" href="<?= e(base_url('view_students.php')) ?>">فتح قائمة الطلاب</a>
+                 </div>
+             </div>
+             <div class="col-md-6">
+                 <div class="action-card">
+-                    <h3>Add student</h3>
+-                    <p>Create a new record with contact details and an optional profile photo.</p>
+-                    <a class="btn btn-navy" href="<?= e(base_url('add_student.php')) ?>">Add a student</a>
++                    <h3>إضافة طالب</h3>
++                    <p>أنشئ سجلاً جديداً يتضمن بيانات التواصل وصورة شخصية اختيارية.</p>
++                    <a class="btn btn-navy" href="<?= e(base_url('add_student.php')) ?>">إضافة طالب</a>
+                 </div>
+             </div>
+         </div>
+diff --git a/delete_student.php b/delete_student.php
+index 443a380..090dbd5 100644
+--- a/delete_student.php
++++ b/delete_student.php
+@@ -7,7 +7,7 @@ require_once __DIR__ . '/includes/student_upload.php';
+ 
+ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+     http_response_code(405);
+-    flash_set('warning', 'Students can only be deleted using the Delete confirmation form.');
++    flash_set('warning', 'لا يمكن حذف الطلاب إلا من خلال نموذج تأكيد الحذف.');
+     redirect_to('view_students.php');
+ }
+ 
+@@ -15,7 +15,7 @@ require_valid_csrf();
+ 
+ $id = parse_positive_int($_POST['id'] ?? null);
+ if ($id === null) {
+-    flash_set('danger', 'Invalid student ID.');
++    flash_set('danger', 'رقم الطالب غير صالح.');
+     redirect_to('view_students.php');
+ }
+ 
+@@ -24,7 +24,7 @@ try {
+     $student = find_student_by_id($pdo, $id);
+ 
+     if ($student === null) {
+-        flash_set('warning', 'Student not found or already deleted.');
++        flash_set('warning', 'لم يتم العثور على الطالب أو أنه حُذف مسبقاً.');
+         redirect_to('view_students.php');
+     }
+ 
+@@ -35,10 +35,10 @@ try {
+ 
+     delete_managed_student_image($pdo, $picture, null);
+ 
+-    flash_set('success', 'Student deleted successfully.');
++    flash_set('success', 'تم حذف الطالب بنجاح.');
+     redirect_to('view_students.php');
+ } catch (Throwable $e) {
+     error_log('Delete student failed: ' . $e->getMessage());
+-    flash_set('danger', 'Unable to delete the student. Please try again later.');
++    flash_set('danger', 'تعذّر حذف الطالب. يرجى المحاولة لاحقاً.');
+     redirect_to('view_students.php');
+ }
+diff --git a/includes/auth.php b/includes/auth.php
+index 284897b..846bd6b 100644
+--- a/includes/auth.php
++++ b/includes/auth.php
+@@ -105,7 +105,7 @@ function requireAuth(): void
+ 
+     $userId = currentUserId();
+     if ($userId === null) {
+-        flash_set('warning', 'Please log in to continue.');
++        flash_set('warning', 'يرجى تسجيل الدخول للمتابعة.');
+         redirect_to('login.php');
+     }
+ 
+@@ -115,7 +115,7 @@ function requireAuth(): void
+         $user = $stmt->fetch();
+     } catch (Throwable $e) {
+         error_log('requireAuth lookup failed: ' . $e->getMessage());
+-        flash_set('danger', 'Unable to verify your session. Please log in again.');
++        flash_set('danger', 'تعذّر التحقق من جلستك. يرجى تسجيل الدخول مجدداً.');
+         logout_user();
+         redirect_to('login.php');
+     }
+@@ -123,7 +123,7 @@ function requireAuth(): void
+     if (!$user) {
+         logout_user();
+         init_session();
+-        flash_set('warning', 'Your account is no longer available. Please log in again.');
++        flash_set('warning', 'حسابك لم يعد متاحاً. يرجى تسجيل الدخول مجدداً.');
+         redirect_to('login.php');
+     }
+ 
+diff --git a/includes/csrf.php b/includes/csrf.php
+index e89e29e..99e52f9 100644
+--- a/includes/csrf.php
++++ b/includes/csrf.php
+@@ -53,7 +53,7 @@ function require_valid_csrf(): void
+     $token = isset($_POST['_csrf']) ? (string) $_POST['_csrf'] : null;
+ 
+     if (!csrf_verify($token)) {
+-        flash_set('danger', 'Your session token is invalid or expired. Please try again.');
++        flash_set('danger', 'رمز الجلسة غير صالح أو منتهي الصلاحية. يرجى المحاولة مرة أخرى.');
+         $referer = $_SERVER['HTTP_REFERER'] ?? '';
+         if (is_string($referer) && $referer !== '') {
+             header('Location: ' . $referer);
+diff --git a/includes/footer.php b/includes/footer.php
+index b70908f..c7fb960 100644
+--- a/includes/footer.php
++++ b/includes/footer.php
+@@ -9,23 +9,23 @@ declare(strict_types=1);
+             <div class="col-md-8">
+                 <p class="mb-1 fw-semibold text-navy"><?= e(APP_NAME) ?></p>
+                 <p class="mb-0 small text-muted">
+-                    BWP501 course project — Syrian Virtual University.
+-                    Secure authentication and student administration with search, pagination, and profile images.
++                    مشروع مقرر BWP501 — الجامعة الافتراضية السورية.
++                    مصادقة آمنة وإدارة للطلاب مع البحث وتقسيم الصفحات والصور الشخصية.
+                 </p>
+             </div>
+             <div class="col-md-4 text-md-end">
+                 <?php if (function_exists('isAuthenticated') && isAuthenticated()): ?>
+-                    <a class="footer-link me-3" href="<?= e(base_url('dashboard.php')) ?>">Dashboard</a>
+-                    <a class="footer-link me-3" href="<?= e(base_url('view_students.php')) ?>">Students</a>
+-                    <a class="footer-link" href="<?= e(base_url('add_student.php')) ?>">Add</a>
++                    <a class="footer-link me-3" href="<?= e(base_url('dashboard.php')) ?>">لوحة التحكم</a>
++                    <a class="footer-link me-3" href="<?= e(base_url('view_students.php')) ?>">الطلاب</a>
++                    <a class="footer-link" href="<?= e(base_url('add_student.php')) ?>">إضافة</a>
+                 <?php else: ?>
+-                    <a class="footer-link me-3" href="<?= e(base_url('login.php')) ?>">Login</a>
+-                    <a class="footer-link" href="<?= e(base_url('register.php')) ?>">Register</a>
++                    <a class="footer-link me-3" href="<?= e(base_url('login.php')) ?>">تسجيل الدخول</a>
++                    <a class="footer-link" href="<?= e(base_url('register.php')) ?>">إنشاء حساب</a>
+                 <?php endif; ?>
+             </div>
+         </div>
+         <p class="small text-muted mt-3 mb-0">
+-            &copy; <span data-current-year></span> Academic administration demo — assignment use only.
++            &copy; <span data-current-year></span> نموذج للإدارة الأكاديمية — لأغراض الوظيفة فقط.
+         </p>
+     </div>
+ </footer>
+diff --git a/includes/header.php b/includes/header.php
+index 27be1ad..159faa3 100644
+--- a/includes/header.php
++++ b/includes/header.php
+@@ -22,28 +22,30 @@ if ($loggedIn && $bodyClass === '') {
+ }
+ ?>
+ <!DOCTYPE html>
+-<html lang="en">
++<html lang="ar" dir="rtl">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+-    <meta name="description" content="Student Registration System — BWP501 university project">
++    <meta name="description" content="نظام تسجيل الطلاب — مشروع جامعي BWP501">
+     <title><?= e($pageTitle) ?></title>
+-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
++    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet"
+           crossorigin="anonymous">
++    <link rel="preconnect" href="https://fonts.googleapis.com">
++    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
++    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="<?= e(base_url('assets/css/style.css')) ?>?v=5">
+     <link rel="stylesheet" href="<?= e(base_url('assets/css/students.css')) ?>">
+ </head>
+ <body class="<?= e($bodyClass) ?>">
+-<a class="visually-hidden-focusable btn btn-sm btn-primary skip-link" href="#main-content">Skip to main content</a>
++<a class="visually-hidden-focusable btn btn-sm btn-primary skip-link" href="#main-content">انتقل إلى المحتوى الرئيسي</a>
+ 
+-<nav class="navbar navbar-expand-lg navbar-dark app-navbar sticky-top" aria-label="Main navigation">
++<nav class="navbar navbar-expand-lg navbar-dark app-navbar sticky-top" aria-label="التنقل الرئيسي">
+     <div class="container">
+         <a class="navbar-brand fw-semibold" href="<?= e(base_url($loggedIn ? 'dashboard.php' : 'index.php')) ?>">
+             <?= e(APP_NAME) ?>
+         </a>
+         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+-                aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
++                aria-controls="mainNav" aria-expanded="false" aria-label="إظهار/إخفاء القائمة">
+             <span class="navbar-toggler-icon"></span>
+         </button>
+         <div class="collapse navbar-collapse" id="mainNav">
+@@ -51,19 +53,19 @@ if ($loggedIn && $bodyClass === '') {
+                 <?php if ($loggedIn): ?>
+                     <li class="nav-item">
+                         <a class="nav-link<?= $currentPage === 'dashboard' ? ' active' : '' ?>"
+-                           href="<?= e(base_url('dashboard.php')) ?>"<?= $currentPage === 'dashboard' ? ' aria-current="page"' : '' ?>>Dashboard</a>
++                           href="<?= e(base_url('dashboard.php')) ?>"<?= $currentPage === 'dashboard' ? ' aria-current="page"' : '' ?>>لوحة التحكم</a>
+                     </li>
+                     <li class="nav-item">
+                         <a class="nav-link<?= $currentPage === 'view' ? ' active' : '' ?>"
+-                           href="<?= e(base_url('view_students.php')) ?>"<?= $currentPage === 'view' ? ' aria-current="page"' : '' ?>>Students</a>
++                           href="<?= e(base_url('view_students.php')) ?>"<?= $currentPage === 'view' ? ' aria-current="page"' : '' ?>>الطلاب</a>
+                     </li>
+                     <li class="nav-item">
+                         <a class="nav-link<?= $currentPage === 'add' ? ' active' : '' ?>"
+-                           href="<?= e(base_url('add_student.php')) ?>"<?= $currentPage === 'add' ? ' aria-current="page"' : '' ?>>Add Student</a>
++                           href="<?= e(base_url('add_student.php')) ?>"<?= $currentPage === 'add' ? ' aria-current="page"' : '' ?>>إضافة طالب</a>
+                     </li>
+                     <?php if ($navUsername !== null): ?>
+                         <li class="nav-item d-none d-lg-block">
+-                            <span class="nav-link nav-user" title="Signed-in account">
++                            <span class="nav-link nav-user" title="الحساب المسجَّل دخوله">
+                                 <?= e($navUsername) ?>
+                             </span>
+                         </li>
+@@ -71,21 +73,21 @@ if ($loggedIn && $bodyClass === '') {
+                     <li class="nav-item">
+                         <form method="post" action="<?= e(base_url('logout.php')) ?>" class="d-inline ms-lg-1">
+                             <?= csrf_field() ?>
+-                            <button type="submit" class="btn btn-sm btn-logout">Logout</button>
++                            <button type="submit" class="btn btn-sm btn-logout">تسجيل الخروج</button>
+                         </form>
+                     </li>
+                 <?php else: ?>
+                     <li class="nav-item">
+                         <a class="nav-link<?= $currentPage === 'home' ? ' active' : '' ?>"
+-                           href="<?= e(base_url('index.php')) ?>"<?= $currentPage === 'home' ? ' aria-current="page"' : '' ?>>Home</a>
++                           href="<?= e(base_url('index.php')) ?>"<?= $currentPage === 'home' ? ' aria-current="page"' : '' ?>>الرئيسية</a>
+                     </li>
+                     <li class="nav-item">
+                         <a class="nav-link<?= $currentPage === 'login' ? ' active' : '' ?>"
+-                           href="<?= e(base_url('login.php')) ?>"<?= $currentPage === 'login' ? ' aria-current="page"' : '' ?>>Login</a>
++                           href="<?= e(base_url('login.php')) ?>"<?= $currentPage === 'login' ? ' aria-current="page"' : '' ?>>تسجيل الدخول</a>
+                     </li>
+                     <li class="nav-item">
+                         <a class="btn btn-sm btn-light text-navy fw-semibold ms-lg-2 px-3"
+-                           href="<?= e(base_url('register.php')) ?>">Register</a>
++                           href="<?= e(base_url('register.php')) ?>">إنشاء حساب</a>
+                     </li>
+                 <?php endif; ?>
+             </ul>
+@@ -99,7 +101,7 @@ if ($loggedIn && $bodyClass === '') {
+         <div class="alert alert-<?= e($flash['type'] === 'danger' ? 'danger' : ($flash['type'] === 'warning' ? 'warning' : ($flash['type'] === 'success' ? 'success' : 'info'))) ?> alert-dismissible fade show"
+              role="alert">
+             <?= e($flash['message']) ?>
+-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close notification"></button>
++            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق التنبيه"></button>
+         </div>
+     </div>
+ <?php endif; ?>
+diff --git a/includes/student_upload.php b/includes/student_upload.php
+index 857b243..5adde03 100644
+--- a/includes/student_upload.php
++++ b/includes/student_upload.php
+@@ -89,18 +89,18 @@ function process_student_image_upload(?array $file): array
+ 
+     $errorCode = (int) $file['error'];
+     if ($errorCode !== UPLOAD_ERR_OK) {
+-        return ['path' => null, 'error' => 'Image upload failed. Please try again.'];
++        return ['path' => null, 'error' => 'فشل رفع الصورة. يرجى المحاولة مرة أخرى.'];
+     }
+ 
+     $tmp = (string) ($file['tmp_name'] ?? '');
+     $size = (int) ($file['size'] ?? 0);
+ 
+     if ($tmp === '' || !is_uploaded_file($tmp)) {
+-        return ['path' => null, 'error' => 'Invalid upload. Please try again.'];
++        return ['path' => null, 'error' => 'عملية رفع غير صالحة. يرجى المحاولة مرة أخرى.'];
+     }
+ 
+     if ($size <= 0 || $size > STUDENT_UPLOAD_MAX_BYTES) {
+-        return ['path' => null, 'error' => 'Image must be 2 MB or smaller.'];
++        return ['path' => null, 'error' => 'يجب ألا يتجاوز حجم الصورة 2 ميغابايت.'];
+     }
+ 
+     $finfo = new finfo(FILEINFO_MIME_TYPE);
+@@ -108,30 +108,30 @@ function process_student_image_upload(?array $file): array
+     $map = student_upload_mime_map();
+ 
+     if (!isset($map[$mime])) {
+-        return ['path' => null, 'error' => 'Only JPEG, PNG, and WEBP images are allowed.'];
++        return ['path' => null, 'error' => 'يُسمح فقط بصور JPEG و PNG و WEBP.'];
+     }
+ 
+     $imageInfo = @getimagesize($tmp);
+     if ($imageInfo === false) {
+-        return ['path' => null, 'error' => 'The uploaded file is not a valid image.'];
++        return ['path' => null, 'error' => 'الملف المرفوع ليس صورة صالحة.'];
+     }
+ 
+     $detectedMime = (string) ($imageInfo['mime'] ?? '');
+     if (!isset($map[$detectedMime]) || $detectedMime !== $mime) {
+-        return ['path' => null, 'error' => 'The uploaded file is not a valid image.'];
++        return ['path' => null, 'error' => 'الملف المرفوع ليس صورة صالحة.'];
+     }
+ 
+     $ext = $map[$mime];
+     $dir = student_upload_absolute_dir();
+     if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
+-        return ['path' => null, 'error' => 'Unable to store the image right now.'];
++        return ['path' => null, 'error' => 'تعذّر حفظ الصورة حالياً.'];
+     }
+ 
+     $filename = bin2hex(random_bytes(16)) . '.' . $ext;
+     $destination = $dir . DIRECTORY_SEPARATOR . $filename;
+ 
+     if (!move_uploaded_file($tmp, $destination)) {
+-        return ['path' => null, 'error' => 'Unable to store the image right now.'];
++        return ['path' => null, 'error' => 'تعذّر حفظ الصورة حالياً.'];
+     }
+ 
+     @chmod($destination, 0644);
+diff --git a/includes/student_validation.php b/includes/student_validation.php
+index 32e2495..30cd691 100644
+--- a/includes/student_validation.php
++++ b/includes/student_validation.php
+@@ -24,31 +24,31 @@ function validate_student_input(array $input): array
+     $errors = [];
+ 
+     if ($name === '') {
+-        $errors['name'] = 'Full name is required.';
++        $errors['name'] = 'الاسم الكامل مطلوب.';
+     } elseif (mb_strlen($name) > 100) {
+-        $errors['name'] = 'Full name must be at most 100 characters.';
++        $errors['name'] = 'يجب ألا يتجاوز الاسم الكامل 100 حرف.';
+     }
+ 
+     if ($email === '') {
+-        $errors['email'] = 'Email is required.';
++        $errors['email'] = 'البريد الإلكتروني مطلوب.';
+     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+-        $errors['email'] = 'Please enter a valid email address.';
++        $errors['email'] = 'يرجى إدخال بريد إلكتروني صحيح.';
+     } elseif (mb_strlen($email) > 100) {
+-        $errors['email'] = 'Email must be at most 100 characters.';
++        $errors['email'] = 'يجب ألا يتجاوز البريد الإلكتروني 100 حرف.';
+     }
+ 
+     if ($phoneNormalized === '') {
+-        $errors['phone'] = 'Phone number is required.';
++        $errors['phone'] = 'رقم الهاتف مطلوب.';
+     } elseif (mb_strlen($phoneNormalized) > 15) {
+-        $errors['phone'] = 'Phone number must be at most 15 characters.';
++        $errors['phone'] = 'يجب ألا يتجاوز رقم الهاتف 15 حرفاً.';
+     } elseif (!preg_match('/^\+?[0-9][0-9\s\-()]{5,14}$/', $phoneNormalized)) {
+-        $errors['phone'] = 'Enter a valid phone number (digits, spaces, +, -, or parentheses).';
++        $errors['phone'] = 'أدخل رقم هاتف صحيحاً (أرقام، مسافات، +، -، أو أقواس).';
+     }
+ 
+     if ($address === '') {
+-        $errors['address'] = 'Address is required.';
++        $errors['address'] = 'العنوان مطلوب.';
+     } elseif (mb_strlen($address) > 5000) {
+-        $errors['address'] = 'Address is too long.';
++        $errors['address'] = 'العنوان طويل جداً.';
+     }
+ 
+     return [
+diff --git a/index.php b/index.php
+index cc55fe4..6e6b966 100644
+--- a/index.php
++++ b/index.php
+@@ -9,7 +9,7 @@ init_session();
+ $isLoggedIn = isAuthenticated();
+ 
+ $currentPage = 'home';
+-$pageTitle = 'Home | Student Registration System';
++$pageTitle = 'الرئيسية | نظام تسجيل الطلاب';
+ $bodyClass = $isLoggedIn ? 'page-home app-authenticated' : 'page-home app-public';
+ 
+ require_once __DIR__ . '/includes/header.php';
+@@ -23,8 +23,8 @@ require_once __DIR__ . '/includes/header.php';
+         <div class="row align-items-center g-4">
+             <section class="developer-banner">
+     <div class="developer-banner-content">
+-        <span class="developer-label">PROJECT DEVELOPERS</span>
+-        <h2>Designed & Developed By</h2>
++        <span class="developer-label">مطوّرو المشروع</span>
++        <h2>تصميم وتطوير</h2>
+ 
+         <div class="developer-names">
+             <span class="developer-name">
+@@ -42,32 +42,32 @@ require_once __DIR__ . '/includes/header.php';
+     <div class="developer-decoration">BWP501</div>
+ </section>
+             <div class="col-lg-7">
+-                <span class="hero-badge mb-3">BWP501 · Syrian Virtual University</span>
+-                <h1 class="display-5 fw-bold text-navy mb-3">Student Registration System</h1>
++                <span class="hero-badge mb-3">BWP501 · الجامعة الافتراضية السورية</span>
++                <h1 class="display-5 fw-bold text-navy mb-3">نظام تسجيل الطلاب</h1>
+                 <p class="lead text-muted mb-4">
+-                    A secure academic administration app for managing student records —
+-                    authentication, CRUD, profile images, search, sorting, and pagination.
++                    تطبيق آمن للإدارة الأكاديمية لإدارة سجلات الطلاب —
++                    المصادقة، والإضافة والعرض والتعديل والحذف، والصور الشخصية، والبحث، والفرز، وتقسيم الصفحات.
+                 </p>
+                 <div class="d-flex flex-wrap gap-2">
+                     <?php if ($isLoggedIn): ?>
+-                        <a class="btn btn-navy btn-lg" href="<?= e(base_url('dashboard.php')) ?>">Open dashboard</a>
+-                        <a class="btn btn-outline-navy btn-lg" href="<?= e(base_url('view_students.php')) ?>">View students</a>
+-                        <a class="btn btn-outline-secondary btn-lg" href="<?= e(base_url('add_student.php')) ?>">Add student</a>
++                        <a class="btn btn-navy btn-lg" href="<?= e(base_url('dashboard.php')) ?>">فتح لوحة التحكم</a>
++                        <a class="btn btn-outline-navy btn-lg" href="<?= e(base_url('view_students.php')) ?>">عرض الطلاب</a>
++                        <a class="btn btn-outline-secondary btn-lg" href="<?= e(base_url('add_student.php')) ?>">إضافة طالب</a>
+                     <?php else: ?>
+-                        <a class="btn btn-navy btn-lg" href="<?= e(base_url('login.php')) ?>">Login</a>
+-                        <a class="btn btn-outline-navy btn-lg" href="<?= e(base_url('register.php')) ?>">Register</a>
++                        <a class="btn btn-navy btn-lg" href="<?= e(base_url('login.php')) ?>">تسجيل الدخول</a>
++                        <a class="btn btn-outline-navy btn-lg" href="<?= e(base_url('register.php')) ?>">إنشاء حساب</a>
+                     <?php endif; ?>
+                 </div>
+             </div>
+             <div class="col-lg-5">
+                 <div class="hero-panel">
+-                    <h2 class="h5 text-navy mb-3">System capabilities</h2>
++                    <h2 class="h5 text-navy mb-3">إمكانيات النظام</h2>
+                     <ul class="list-unstyled mb-0">
+-                        <li class="mb-2"><span class="status-pill me-1">Done</span> Authentication &amp; sessions</li>
+-                        <li class="mb-2"><span class="status-pill me-1">Done</span> Student create / read / update / delete</li>
+-                        <li class="mb-2"><span class="status-pill me-1">Done</span> Profile pictures (JPEG / PNG / WEBP)</li>
+-                        <li class="mb-2"><span class="status-pill me-1">Done</span> Search, sort, and pagination</li>
+-                        <li class="mb-0"><span class="status-pill me-1">Done</span> AJAX form validation</li>
++                        <li class="mb-2"><span class="status-pill me-1">مكتمل</span> المصادقة والجلسات</li>
++                        <li class="mb-2"><span class="status-pill me-1">مكتمل</span> إضافة / عرض / تعديل / حذف الطلاب</li>
++                        <li class="mb-2"><span class="status-pill me-1">مكتمل</span> الصور الشخصية (JPEG / PNG / WEBP)</li>
++                        <li class="mb-2"><span class="status-pill me-1">مكتمل</span> البحث والفرز وتقسيم الصفحات</li>
++                        <li class="mb-0"><span class="status-pill me-1">مكتمل</span> التحقق من النماذج عبر AJAX</li>
+                     </ul>
+                 </div>
+             </div>
+@@ -79,30 +79,30 @@ require_once __DIR__ . '/includes/header.php';
+     <div class="container">
+         <div class="row mb-4">
+             <div class="col-lg-8">
+-                <h2 class="h3 text-navy mb-2">Built for course administration workflows</h2>
++                <h2 class="h3 text-navy mb-2">مصمَّم لسير عمل إدارة المقررات</h2>
+                 <p class="text-muted mb-0">
+-                    Straightforward tools for maintaining an accurate student register —
+-                    without inventing marketing claims or fictitious statistics.
++                    أدوات بسيطة للحفاظ على سجل طلاب دقيق —
++                    دون ادعاءات تسويقية أو إحصاءات وهمية.
+                 </p>
+             </div>
+         </div>
+         <div class="row g-4">
+             <div class="col-md-6 col-lg-4">
+                 <article class="feature-tile">
+-                    <h3>Secure access</h3>
+-                    <p>Registration, login, logout, password hashing, PHP sessions, and CSRF protection.</p>
++                    <h3>وصول آمن</h3>
++                    <p>إنشاء الحساب، وتسجيل الدخول والخروج، وتشفير كلمات المرور، وجلسات PHP، والحماية من هجمات CSRF.</p>
+                 </article>
+             </div>
+             <div class="col-md-6 col-lg-4">
+                 <article class="feature-tile">
+-                    <h3>Student records</h3>
+-                    <p>Add, browse, update, and delete students with confirmation and validation.</p>
++                    <h3>سجلات الطلاب</h3>
++                    <p>إضافة الطلاب وتصفحهم وتعديلهم وحذفهم مع التأكيد والتحقق من صحة البيانات.</p>
+                 </article>
+             </div>
+             <div class="col-md-6 col-lg-4">
+                 <article class="feature-tile">
+-                    <h3>Operational tools</h3>
+-                    <p>Profile images, search, sorting, server-side pagination, and AJAX feedback.</p>
++                    <h3>أدوات تشغيلية</h3>
++                    <p>الصور الشخصية، والبحث، والفرز، وتقسيم الصفحات من جهة الخادم، والتحقق الفوري عبر AJAX.</p>
+                 </article>
+             </div>
+         </div>
+@@ -114,23 +114,23 @@ require_once __DIR__ . '/includes/header.php';
+         <div class="panel panel-elevated">
+             <div class="row g-4 align-items-center">
+                 <div class="col-lg-8">
+-                    <h2 class="h4 text-navy mb-2">Get started</h2>
++                    <h2 class="h4 text-navy mb-2">ابدأ الآن</h2>
+                     <p class="text-muted mb-0">
+                         <?php if ($isLoggedIn): ?>
+-                            Continue to the dashboard or jump straight into student management.
++                            تابع إلى لوحة التحكم أو انتقل مباشرة إلى إدارة الطلاب.
+                         <?php else: ?>
+-                            Create an account or sign in to manage student records.
++                            أنشئ حساباً أو سجّل الدخول لإدارة سجلات الطلاب.
+                         <?php endif; ?>
+                     </p>
+                 </div>
+                 <div class="col-lg-4">
+                     <div class="d-grid gap-2">
+                         <?php if ($isLoggedIn): ?>
+-                            <a class="btn btn-navy" href="<?= e(base_url('dashboard.php')) ?>">Dashboard</a>
+-                            <a class="btn btn-outline-navy" href="<?= e(base_url('view_students.php')) ?>">View students</a>
++                            <a class="btn btn-navy" href="<?= e(base_url('dashboard.php')) ?>">لوحة التحكم</a>
++                            <a class="btn btn-outline-navy" href="<?= e(base_url('view_students.php')) ?>">عرض الطلاب</a>
+                         <?php else: ?>
+-                            <a class="btn btn-navy" href="<?= e(base_url('register.php')) ?>">Create account</a>
+-                            <a class="btn btn-outline-navy" href="<?= e(base_url('login.php')) ?>">Sign in</a>
++                            <a class="btn btn-navy" href="<?= e(base_url('register.php')) ?>">إنشاء حساب</a>
++                            <a class="btn btn-outline-navy" href="<?= e(base_url('login.php')) ?>">تسجيل الدخول</a>
+                         <?php endif; ?>
+                     </div>
+                 </div>
+diff --git a/login.php b/login.php
+index 51fe8c7..fc18b84 100644
+--- a/login.php
++++ b/login.php
+@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+     $password = (string) ($_POST['password'] ?? '');
+ 
+     if ($identifier === '' || $password === '') {
+-        $errors['form'] = 'Invalid username/email or password.';
++        $errors['form'] = 'اسم المستخدم/البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+     } else {
+         try {
+             $pdo = getPDO();
+@@ -36,21 +36,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+             $user = $stmt->fetch();
+ 
+             if (!$user || !password_verify($password, (string) $user['password'])) {
+-                $errors['form'] = 'Invalid username/email or password.';
++                $errors['form'] = 'اسم المستخدم/البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+             } else {
+                 login_user((int) $user['id'], (string) $user['username']);
+-                flash_set('success', 'Welcome back, ' . (string) $user['username'] . '.');
++                flash_set('success', 'أهلاً بعودتك، ' . (string) $user['username'] . '.');
+                 redirect_to('dashboard.php');
+             }
+         } catch (Throwable $e) {
+             error_log('Login error: ' . $e->getMessage());
+-            $errors['form'] = 'Unable to log in right now. Please try again later.';
++            $errors['form'] = 'تعذّر تسجيل الدخول حالياً. يرجى المحاولة لاحقاً.';
+         }
+     }
+ }
+ 
+ $currentPage = 'login';
+-$pageTitle = 'Login | Student Registration System';
++$pageTitle = 'تسجيل الدخول | نظام تسجيل الطلاب';
+ $bodyClass = 'page-auth app-public';
+ 
+ require_once __DIR__ . '/includes/header.php';
+@@ -61,20 +61,20 @@ require_once __DIR__ . '/includes/header.php';
+         <div class="row justify-content-center">
+             <div class="col-md-8 col-lg-5">
+                 <div class="panel auth-panel">
+-                    <p class="auth-brand mb-0">Student Registration</p>
+-                    <h1 class="h3 text-navy mb-2">Sign in</h1>
+-                    <p class="text-muted mb-4">Use your username or email and password to continue.</p>
++                    <p class="auth-brand mb-0">تسجيل الطلاب</p>
++                    <h1 class="h3 text-navy mb-2">تسجيل الدخول</h1>
++                    <p class="text-muted mb-4">استخدم اسم المستخدم أو البريد الإلكتروني وكلمة المرور للمتابعة.</p>
+ 
+                     <?php if (isset($errors['form'])): ?>
+                         <div class="alert alert-danger" role="alert"><?= e($errors['form']) ?></div>
+                     <?php endif; ?>
+ 
+                     <form method="post" action="<?= e(base_url('login.php')) ?>" novalidate
+-                          aria-label="Login form" id="loginForm" data-submit-once>
++                          aria-label="نموذج تسجيل الدخول" id="loginForm" data-submit-once>
+                         <?= csrf_field() ?>
+ 
+                         <div class="mb-3">
+-                            <label for="login_identifier" class="form-label">Username or email</label>
++                            <label for="login_identifier" class="form-label">اسم المستخدم أو البريد الإلكتروني</label>
+                             <input type="text"
+                                    class="form-control<?= isset($errors['form']) ? ' is-invalid' : '' ?>"
+                                    id="login_identifier" name="identifier"
+@@ -84,7 +84,7 @@ require_once __DIR__ . '/includes/header.php';
+                         </div>
+ 
+                         <div class="mb-4">
+-                            <label for="login_password" class="form-label">Password</label>
++                            <label for="login_password" class="form-label">كلمة المرور</label>
+                             <div class="input-group">
+                                 <input type="password"
+                                        class="form-control<?= isset($errors['form']) ? ' is-invalid' : '' ?>"
+@@ -93,7 +93,7 @@ require_once __DIR__ . '/includes/header.php';
+                                 <button class="btn btn-outline-secondary" type="button"
+                                         data-toggle-password="login_password"
+                                         aria-pressed="false"
+-                                        aria-label="Show password">Show</button>
++                                        aria-label="إظهار كلمة المرور">إظهار</button>
+                             </div>
+                         </div>
+ 
+@@ -101,12 +101,12 @@ require_once __DIR__ . '/includes/header.php';
+                             <div id="login_error" class="visually-hidden"><?= e($errors['form']) ?></div>
+                         <?php endif; ?>
+ 
+-                        <button type="submit" class="btn btn-navy w-100" data-loading-label="Signing in…">Login</button>
++                        <button type="submit" class="btn btn-navy w-100" data-loading-label="جارٍ تسجيل الدخول…">تسجيل الدخول</button>
+                     </form>
+ 
+                     <p class="small text-muted mt-3 mb-0">
+-                        No account yet?
+-                        <a href="<?= e(base_url('register.php')) ?>">Register</a>
++                        ليس لديك حساب بعد؟
++                        <a href="<?= e(base_url('register.php')) ?>">إنشاء حساب</a>
+                     </p>
+                 </div>
+             </div>
+diff --git a/logout.php b/logout.php
+index 2f9c238..c840851 100644
+--- a/logout.php
++++ b/logout.php
+@@ -10,7 +10,7 @@ init_session();
+ 
+ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+     http_response_code(405);
+-    flash_set('warning', 'Logout must be submitted using the Logout button.');
++    flash_set('warning', 'يجب تسجيل الخروج باستخدام زر تسجيل الخروج.');
+     redirect_to(isAuthenticated() ? 'dashboard.php' : 'login.php');
+ }
+ 
+@@ -18,5 +18,5 @@ require_valid_csrf();
+ 
+ logout_user();
+ init_session();
+-flash_set('success', 'You have been logged out.');
++flash_set('success', 'تم تسجيل خروجك.');
+ redirect_to('login.php');
+diff --git a/register.php b/register.php
+index 5fbf051..47a5884 100644
+--- a/register.php
++++ b/register.php
+@@ -23,31 +23,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+     $passwordConfirm = (string) ($_POST['password_confirm'] ?? '');
+ 
+     if ($username === '') {
+-        $errors['username'] = 'Username is required.';
++        $errors['username'] = 'اسم المستخدم مطلوب.';
+     } elseif (mb_strlen($username) > 100) {
+-        $errors['username'] = 'Username must be at most 100 characters.';
++        $errors['username'] = 'يجب ألا يتجاوز اسم المستخدم 100 حرف.';
+     } elseif (!preg_match('/^[A-Za-z0-9_.-]+$/', $username)) {
+-        $errors['username'] = 'Username may only contain letters, numbers, dots, underscores, and hyphens.';
++        $errors['username'] = 'يمكن أن يحتوي اسم المستخدم على أحرف إنجليزية وأرقام ونقاط وشرطات سفلية وشرطات فقط.';
+     }
+ 
+     if ($email === '') {
+-        $errors['email'] = 'Email is required.';
++        $errors['email'] = 'البريد الإلكتروني مطلوب.';
+     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+-        $errors['email'] = 'Please enter a valid email address.';
++        $errors['email'] = 'يرجى إدخال بريد إلكتروني صحيح.';
+     } elseif (mb_strlen($email) > 100) {
+-        $errors['email'] = 'Email must be at most 100 characters.';
++        $errors['email'] = 'يجب ألا يتجاوز البريد الإلكتروني 100 حرف.';
+     }
+ 
+     if ($password === '') {
+-        $errors['password'] = 'Password is required.';
++        $errors['password'] = 'كلمة المرور مطلوبة.';
+     } elseif (strlen($password) < 8) {
+-        $errors['password'] = 'Password must be at least 8 characters.';
++        $errors['password'] = 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.';
+     }
+ 
+     if ($passwordConfirm === '') {
+-        $errors['password_confirm'] = 'Please confirm your password.';
++        $errors['password_confirm'] = 'يرجى تأكيد كلمة المرور.';
+     } elseif ($password !== $passwordConfirm) {
+-        $errors['password_confirm'] = 'Password confirmation does not match.';
++        $errors['password_confirm'] = 'تأكيد كلمة المرور غير مطابق.';
+     }
+ 
+     if ($errors === []) {
+@@ -67,10 +67,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+ 
+             if ($existing) {
+                 if (strcasecmp((string) $existing['username'], $username) === 0) {
+-                    $errors['username'] = 'This username is already taken.';
++                    $errors['username'] = 'اسم المستخدم هذا مستخدم مسبقاً.';
+                 }
+                 if (strcasecmp((string) $existing['email'], $email) === 0) {
+-                    $errors['email'] = 'This email is already registered.';
++                    $errors['email'] = 'هذا البريد الإلكتروني مسجل مسبقاً.';
+                 }
+             }
+ 
+@@ -90,25 +90,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                     'password' => $hash,
+                 ]);
+ 
+-                flash_set('success', 'Registration successful. Please log in.');
++                flash_set('success', 'تم إنشاء الحساب بنجاح. يرجى تسجيل الدخول.');
+                 redirect_to('login.php');
+             }
+         } catch (PDOException $e) {
+             error_log('Registration PDO error: ' . $e->getMessage());
+             if ($e->getCode() === '23000' || str_contains($e->getMessage(), '23000')) {
+-                $errors['form'] = 'Username or email is already registered.';
++                $errors['form'] = 'اسم المستخدم أو البريد الإلكتروني مسجل مسبقاً.';
+             } else {
+-                $errors['form'] = 'Unable to complete registration. Please try again later.';
++                $errors['form'] = 'تعذّر إكمال التسجيل. يرجى المحاولة لاحقاً.';
+             }
+         } catch (Throwable $e) {
+             error_log('Registration error: ' . $e->getMessage());
+-            $errors['form'] = 'Unable to complete registration. Please try again later.';
++            $errors['form'] = 'تعذّر إكمال التسجيل. يرجى المحاولة لاحقاً.';
+         }
+     }
+ }
+ 
+ $currentPage = 'register';
+-$pageTitle = 'Register | Student Registration System';
++$pageTitle = 'إنشاء حساب | نظام تسجيل الطلاب';
+ $bodyClass = 'page-auth app-public';
+ 
+ require_once __DIR__ . '/includes/header.php';
+@@ -119,20 +119,20 @@ require_once __DIR__ . '/includes/header.php';
+         <div class="row justify-content-center">
+             <div class="col-md-8 col-lg-6">
+                 <div class="panel auth-panel">
+-                    <p class="auth-brand mb-0">Student Registration</p>
+-                    <h1 class="h3 text-navy mb-2">Create an account</h1>
+-                    <p class="text-muted mb-4">Register with a username, email, and password to manage students.</p>
++                    <p class="auth-brand mb-0">تسجيل الطلاب</p>
++                    <h1 class="h3 text-navy mb-2">إنشاء حساب جديد</h1>
++                    <p class="text-muted mb-4">سجّل باستخدام اسم مستخدم وبريد إلكتروني وكلمة مرور لإدارة الطلاب.</p>
+ 
+                     <?php if (isset($errors['form'])): ?>
+                         <div class="alert alert-danger" role="alert"><?= e($errors['form']) ?></div>
+                     <?php endif; ?>
+ 
+                     <form method="post" action="<?= e(base_url('register.php')) ?>" novalidate
+-                          aria-label="Registration form" id="registerForm" data-submit-once>
++                          aria-label="نموذج إنشاء الحساب" id="registerForm" data-submit-once>
+                         <?= csrf_field() ?>
+ 
+                         <div class="mb-3">
+-                            <label for="reg_username" class="form-label">Username <span class="required-mark" aria-hidden="true">*</span></label>
++                            <label for="reg_username" class="form-label">اسم المستخدم <span class="required-mark" aria-hidden="true">*</span></label>
+                             <input type="text" class="form-control<?= isset($errors['username']) ? ' is-invalid' : '' ?>"
+                                    id="reg_username" name="username" value="<?= e($username) ?>"
+                                    autocomplete="username" maxlength="100" required
+@@ -143,7 +143,7 @@ require_once __DIR__ . '/includes/header.php';
+                         </div>
+ 
+                         <div class="mb-3">
+-                            <label for="reg_email" class="form-label">Email <span class="required-mark" aria-hidden="true">*</span></label>
++                            <label for="reg_email" class="form-label">البريد الإلكتروني <span class="required-mark" aria-hidden="true">*</span></label>
+                             <input type="email" class="form-control<?= isset($errors['email']) ? ' is-invalid' : '' ?>"
+                                    id="reg_email" name="email" value="<?= e($email) ?>"
+                                    autocomplete="email" maxlength="100" required
+@@ -154,7 +154,7 @@ require_once __DIR__ . '/includes/header.php';
+                         </div>
+ 
+                         <div class="mb-3">
+-                            <label for="reg_password" class="form-label">Password <span class="required-mark" aria-hidden="true">*</span></label>
++                            <label for="reg_password" class="form-label">كلمة المرور <span class="required-mark" aria-hidden="true">*</span></label>
+                             <div class="input-group">
+                                 <input type="password"
+                                        class="form-control<?= isset($errors['password']) ? ' is-invalid' : '' ?>"
+@@ -163,16 +163,16 @@ require_once __DIR__ . '/includes/header.php';
+                                        aria-describedby="reg_password_help"
+                                        aria-invalid="<?= isset($errors['password']) ? 'true' : 'false' ?>">
+                                 <button class="btn btn-outline-secondary" type="button" data-toggle-password="reg_password"
+-                                        aria-pressed="false" aria-label="Show password">Show</button>
++                                        aria-pressed="false" aria-label="إظهار كلمة المرور">إظهار</button>
+                             </div>
+-                            <div class="form-text" id="reg_password_help">At least 8 characters.</div>
++                            <div class="form-text" id="reg_password_help">8 أحرف على الأقل.</div>
+                             <?php if (isset($errors['password'])): ?>
+                                 <div class="invalid-feedback d-block"><?= e($errors['password']) ?></div>
+                             <?php endif; ?>
+                         </div>
+ 
+                         <div class="mb-4">
+-                            <label for="reg_password_confirm" class="form-label">Confirm password <span class="required-mark" aria-hidden="true">*</span></label>
++                            <label for="reg_password_confirm" class="form-label">تأكيد كلمة المرور <span class="required-mark" aria-hidden="true">*</span></label>
+                             <div class="input-group">
+                                 <input type="password"
+                                        class="form-control<?= isset($errors['password_confirm']) ? ' is-invalid' : '' ?>"
+@@ -182,19 +182,19 @@ require_once __DIR__ . '/includes/header.php';
+                                 <button class="btn btn-outline-secondary" type="button"
+                                         data-toggle-password="reg_password_confirm"
+                                         aria-pressed="false"
+-                                        aria-label="Show confirm password">Show</button>
++                                        aria-label="إظهار تأكيد كلمة المرور">إظهار</button>
+                             </div>
+                             <?php if (isset($errors['password_confirm'])): ?>
+                                 <div class="invalid-feedback d-block"><?= e($errors['password_confirm']) ?></div>
+                             <?php endif; ?>
+                         </div>
+ 
+-                        <button type="submit" class="btn btn-navy w-100" data-loading-label="Creating account…">Register</button>
++                        <button type="submit" class="btn btn-navy w-100" data-loading-label="جارٍ إنشاء الحساب…">إنشاء الحساب</button>
+                     </form>
+ 
+                     <p class="small text-muted mt-3 mb-0">
+-                        Already registered?
+-                        <a href="<?= e(base_url('login.php')) ?>">Login</a>
++                        لديك حساب بالفعل؟
++                        <a href="<?= e(base_url('login.php')) ?>">تسجيل الدخول</a>
+                     </p>
+                 </div>
+             </div>
+diff --git a/update_student.php b/update_student.php
+index c5dbbd9..3702fe0 100644
+--- a/update_student.php
++++ b/update_student.php
+@@ -11,7 +11,7 @@ $errors = [];
+ $id = parse_positive_int($_GET['id'] ?? ($_POST['id'] ?? null));
+ 
+ if ($id === null) {
+-    flash_set('danger', 'Invalid student ID.');
++    flash_set('danger', 'رقم الطالب غير صالح.');
+     redirect_to('view_students.php');
+ }
+ 
+@@ -19,12 +19,12 @@ try {
+     $student = find_student_by_id($pdo, $id);
+ } catch (Throwable $e) {
+     error_log('Load student for update failed: ' . $e->getMessage());
+-    flash_set('danger', 'Unable to load the student. Please try again later.');
++    flash_set('danger', 'تعذّر تحميل بيانات الطالب. يرجى المحاولة لاحقاً.');
+     redirect_to('view_students.php');
+ }
+ 
+ if ($student === null) {
+-    flash_set('warning', 'Student not found.');
++    flash_set('warning', 'لم يتم العثور على الطالب.');
+     redirect_to('view_students.php');
+ }
+ 
+@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+ 
+     $postId = parse_positive_int($_POST['id'] ?? null);
+     if ($postId === null || $postId !== $id) {
+-        flash_set('danger', 'Invalid student ID.');
++        flash_set('danger', 'رقم الطالب غير صالح.');
+         redirect_to('view_students.php');
+     }
+ 
+@@ -82,12 +82,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                 delete_managed_student_image($pdo, $currentPicture, $id);
+             }
+ 
+-            flash_set('success', 'Student updated successfully.');
++            flash_set('success', 'تم تحديث بيانات الطالب بنجاح.');
+             redirect_to('view_students.php');
+         } catch (Throwable $e) {
+             error_log('Update student failed: ' . $e->getMessage());
+             remove_orphan_upload($newImagePath);
+-            $errors['form'] = 'Unable to update the student. Please try again later.';
++            $errors['form'] = 'تعذّر تحديث بيانات الطالب. يرجى المحاولة لاحقاً.';
+         }
+     } else {
+         remove_orphan_upload($newImagePath);
+@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+ }
+ 
+ $currentPage = 'update';
+-$pageTitle = 'Update Student | Student Registration System';
++$pageTitle = 'تعديل طالب | نظام تسجيل الطلاب';
+ 
+ require_once __DIR__ . '/includes/header.php';
+ ?>
+@@ -104,11 +104,11 @@ require_once __DIR__ . '/includes/header.php';
+     <div class="container">
+         <div class="page-header d-flex flex-wrap justify-content-between align-items-start gap-2">
+             <div>
+-                <p class="page-kicker">Students</p>
+-                <h1>Edit student</h1>
+-                <p class="page-desc">Updating <strong><?= e($name) ?></strong> (ID <?= e((string) $id) ?>). Leave the image empty to keep the current photo.</p>
++                <p class="page-kicker">الطلاب</p>
++                <h1>تعديل بيانات طالب</h1>
++                <p class="page-desc">تعديل بيانات <strong><?= e($name) ?></strong> (الرقم <?= e((string) $id) ?>). اترك حقل الصورة فارغاً للإبقاء على الصورة الحالية.</p>
+             </div>
+-            <a class="btn btn-outline-navy" href="<?= e(base_url('view_students.php')) ?>">Back to list</a>
++            <a class="btn btn-outline-navy" href="<?= e(base_url('view_students.php')) ?>">العودة إلى القائمة</a>
+         </div>
+ 
+         <div class="row justify-content-center">
+@@ -129,25 +129,25 @@ require_once __DIR__ . '/includes/header.php';
+ 
+                         <div class="image-preview-wrap mb-4">
+                             <?php if ($currentImageUrl !== null): ?>
+-                                <img src="<?= e($currentImageUrl) ?>" alt="Current profile picture for <?= e($name) ?>"
++                                <img src="<?= e($currentImageUrl) ?>" alt="الصورة الشخصية الحالية لـ <?= e($name) ?>"
+                                      class="student-avatar student-avatar-lg rounded">
+                             <?php else: ?>
+                                 <div class="student-avatar student-avatar-lg student-avatar-placeholder rounded"
+                                      aria-hidden="true"><?= e(mb_strtoupper(mb_substr($name, 0, 1))) ?></div>
+                             <?php endif; ?>
+                             <div class="image-preview-meta">
+-                                <p class="fw-semibold text-navy mb-1">Current photo</p>
++                                <p class="fw-semibold text-navy mb-1">الصورة الحالية</p>
+                                 <p class="small text-muted mb-0">
+                                     <?= $currentImageUrl !== null
+-                                        ? 'Upload a new file below to replace it. Leaving the file empty keeps this image.'
+-                                        : 'No photo yet. You may upload one below.' ?>
++                                        ? 'ارفع ملفاً جديداً أدناه لاستبدالها. ترك الحقل فارغاً يُبقي على هذه الصورة.'
++                                        : 'لا توجد صورة بعد. يمكنك رفع صورة أدناه.' ?>
+                                 </p>
+                             </div>
+                         </div>
+ 
+                         <div class="row g-3">
+                             <div class="col-md-6">
+-                                <label for="student_name" class="form-label">Full name <span class="required-mark" aria-hidden="true">*</span></label>
++                                <label for="student_name" class="form-label">الاسم الكامل <span class="required-mark" aria-hidden="true">*</span></label>
+                                 <input type="text" id="student_name" name="name" maxlength="100" required
+                                        class="form-control<?= isset($errors['name']) ? ' is-invalid' : '' ?>"
+                                        value="<?= e($name) ?>" data-validate-field="name"
+@@ -156,7 +156,7 @@ require_once __DIR__ . '/includes/header.php';
+                             </div>
+ 
+                             <div class="col-md-6">
+-                                <label for="student_email" class="form-label">Email <span class="required-mark" aria-hidden="true">*</span></label>
++                                <label for="student_email" class="form-label">البريد الإلكتروني <span class="required-mark" aria-hidden="true">*</span></label>
+                                 <input type="email" id="student_email" name="email" maxlength="100" required
+                                        class="form-control<?= isset($errors['email']) ? ' is-invalid' : '' ?>"
+                                        value="<?= e($email) ?>" data-validate-field="email"
+@@ -165,7 +165,7 @@ require_once __DIR__ . '/includes/header.php';
+                             </div>
+ 
+                             <div class="col-md-6">
+-                                <label for="student_phone" class="form-label">Phone number <span class="required-mark" aria-hidden="true">*</span></label>
++                                <label for="student_phone" class="form-label">رقم الهاتف <span class="required-mark" aria-hidden="true">*</span></label>
+                                 <input type="tel" id="student_phone" name="phone" maxlength="15" required
+                                        class="form-control<?= isset($errors['phone']) ? ' is-invalid' : '' ?>"
+                                        value="<?= e($phone) ?>" data-validate-field="phone"
+@@ -174,7 +174,7 @@ require_once __DIR__ . '/includes/header.php';
+                             </div>
+ 
+                             <div class="col-12">
+-                                <label for="student_address" class="form-label">Address <span class="required-mark" aria-hidden="true">*</span></label>
++                                <label for="student_address" class="form-label">العنوان <span class="required-mark" aria-hidden="true">*</span></label>
+                                 <textarea id="student_address" name="address" rows="3" required
+                                           class="form-control<?= isset($errors['address']) ? ' is-invalid' : '' ?>"
+                                           data-validate-field="address"
+@@ -183,13 +183,13 @@ require_once __DIR__ . '/includes/header.php';
+                             </div>
+ 
+                             <div class="col-12">
+-                                <label for="student_picture" class="form-label">Replace profile picture</label>
++                                <label for="student_picture" class="form-label">استبدال الصورة الشخصية</label>
+                                 <div class="image-preview-wrap mb-2">
+                                     <div class="image-preview-frame" aria-hidden="true">
+                                         <img id="studentImagePreview" class="d-none" alt="">
+                                     </div>
+                                     <div class="image-preview-meta">
+-                                        <p class="small text-muted mb-0" id="studentImagePreviewHint">Leave empty to keep the current image. JPEG/PNG/WEBP, max 2&nbsp;MB.</p>
++                                        <p class="small text-muted mb-0" id="studentImagePreviewHint">اتركه فارغاً للإبقاء على الصورة الحالية. JPEG/PNG/WEBP، بحد أقصى 2&nbsp;ميغابايت.</p>
+                                     </div>
+                                 </div>
+                                 <input type="file" id="student_picture" name="profile_picture"
+@@ -203,8 +203,8 @@ require_once __DIR__ . '/includes/header.php';
+                         </div>
+ 
+                         <div class="form-actions mt-4">
+-                            <button type="submit" class="btn btn-navy" data-loading-label="Saving…">Save changes</button>
+-                            <a class="btn btn-outline-secondary" href="<?= e(base_url('view_students.php')) ?>">Cancel</a>
++                            <button type="submit" class="btn btn-navy" data-loading-label="جارٍ الحفظ…">حفظ التغييرات</button>
++                            <a class="btn btn-outline-secondary" href="<?= e(base_url('view_students.php')) ?>">إلغاء</a>
+                         </div>
+                     </form>
+                 </div>
+diff --git a/view_students.php b/view_students.php
+index 1550890..c9aa1cc 100644
+--- a/view_students.php
++++ b/view_students.php
+@@ -20,22 +20,22 @@ try {
+     $totalPages = $result['total_pages'];
+ } catch (Throwable $e) {
+     error_log('View students failed: ' . $e->getMessage());
+-    $listError = 'Unable to load students right now. Please try again later.';
++    $listError = 'تعذّر تحميل الطلاب حالياً. يرجى المحاولة لاحقاً.';
+ }
+ 
+ $search = $params['search'];
+ $sort = $params['sort'];
+ $sortLabels = [
+-    'newest' => 'Newest first',
+-    'oldest' => 'Oldest first',
+-    'name_asc' => 'Name A–Z',
+-    'name_desc' => 'Name Z–A',
+-    'email_asc' => 'Email A–Z',
+-    'email_desc' => 'Email Z–A',
++    'newest' => 'الأحدث أولاً',
++    'oldest' => 'الأقدم أولاً',
++    'name_asc' => 'الاسم تصاعدياً (أ–ي)',
++    'name_desc' => 'الاسم تنازلياً (ي–أ)',
++    'email_asc' => 'البريد الإلكتروني تصاعدياً',
++    'email_desc' => 'البريد الإلكتروني تنازلياً',
+ ];
+ 
+ $currentPage = 'view';
+-$pageTitle = 'View Students | Student Registration System';
++$pageTitle = 'عرض الطلاب | نظام تسجيل الطلاب';
+ 
+ require_once __DIR__ . '/includes/header.php';
+ 
+@@ -56,24 +56,24 @@ $queryBase = static function (array $overrides = []) use ($search, $sort, $page)
+     <div class="container">
+         <div class="page-header d-flex flex-wrap justify-content-between align-items-start gap-3">
+             <div>
+-                <p class="page-kicker">Students</p>
+-                <h1>Student register</h1>
+-                <p class="page-desc">Search by name, email, or phone. Sort and browse 10 students per page.</p>
++                <p class="page-kicker">الطلاب</p>
++                <h1>سجل الطلاب</h1>
++                <p class="page-desc">ابحث بالاسم أو البريد الإلكتروني أو الهاتف. افرز وتصفح 10 طلاب في كل صفحة.</p>
+             </div>
+-            <a class="btn btn-navy" href="<?= e(base_url('add_student.php')) ?>">Add student</a>
++            <a class="btn btn-navy" href="<?= e(base_url('add_student.php')) ?>">إضافة طالب</a>
+         </div>
+ 
+         <div class="panel students-toolbar mb-3">
+             <form method="get" action="<?= e(base_url('view_students.php')) ?>" class="row g-3 align-items-end" role="search">
+                 <div class="col-md-6">
+-                    <label for="student_search" class="form-label">Search</label>
++                    <label for="student_search" class="form-label">بحث</label>
+                     <input type="search" class="form-control" id="student_search" name="q"
+-                           value="<?= e($search) ?>" placeholder="Name, email, or phone" maxlength="100"
++                           value="<?= e($search) ?>" placeholder="الاسم أو البريد الإلكتروني أو الهاتف" maxlength="100"
+                            aria-describedby="student_search_help">
+-                    <div class="form-text" id="student_search_help">Partial matches across the full dataset.</div>
++                    <div class="form-text" id="student_search_help">يشمل البحث التطابقات الجزئية في جميع البيانات.</div>
+                 </div>
+                 <div class="col-md-4">
+-                    <label for="student_sort" class="form-label">Sort by</label>
++                    <label for="student_sort" class="form-label">الفرز حسب</label>
+                     <select class="form-select" id="student_sort" name="sort">
+                         <?php foreach ($sortLabels as $key => $label): ?>
+                             <option value="<?= e($key) ?>"<?= $sort === $key ? ' selected' : '' ?>><?= e($label) ?></option>
+@@ -81,12 +81,12 @@ $queryBase = static function (array $overrides = []) use ($search, $sort, $page)
+                     </select>
+                 </div>
+                 <div class="col-md-2 d-grid">
+-                    <button type="submit" class="btn btn-navy">Apply</button>
++                    <button type="submit" class="btn btn-navy">تطبيق</button>
+                 </div>
+             </form>
+             <?php if ($search !== ''): ?>
+                 <div class="mt-3">
+-                    <a class="btn btn-sm btn-outline-secondary" href="<?= e(base_url($queryBase(['q' => '', 'page' => '1']))) ?>">Clear search</a>
++                    <a class="btn btn-sm btn-outline-secondary" href="<?= e(base_url($queryBase(['q' => '', 'page' => '1']))) ?>">مسح البحث</a>
+                 </div>
+             <?php endif; ?>
+         </div>
+@@ -98,34 +98,34 @@ $queryBase = static function (array $overrides = []) use ($search, $sort, $page)
+                 <div class="students-empty text-muted">
+                     <div class="students-empty-icon" aria-hidden="true">0</div>
+                     <?php if ($search !== ''): ?>
+-                        <h2 class="h5 text-navy">No students match</h2>
+-                        <p class="mb-3">Nothing matched “<?= e($search) ?>”.</p>
+-                        <a class="btn btn-outline-navy" href="<?= e(base_url('view_students.php')) ?>">Clear search</a>
++                        <h2 class="h5 text-navy">لا يوجد طلاب مطابقون</h2>
++                        <p class="mb-3">لا توجد نتائج مطابقة لـ «<?= e($search) ?>».</p>
++                        <a class="btn btn-outline-navy" href="<?= e(base_url('view_students.php')) ?>">مسح البحث</a>
+                     <?php else: ?>
+-                        <h2 class="h5 text-navy">No students yet</h2>
+-                        <p class="mb-3">Add the first student to start the register.</p>
+-                        <a class="btn btn-navy" href="<?= e(base_url('add_student.php')) ?>">Add the first student</a>
++                        <h2 class="h5 text-navy">لا يوجد طلاب بعد</h2>
++                        <p class="mb-3">أضف أول طالب لبدء السجل.</p>
++                        <a class="btn btn-navy" href="<?= e(base_url('add_student.php')) ?>">إضافة أول طالب</a>
+                     <?php endif; ?>
+                 </div>
+             <?php else: ?>
+                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                     <p class="small text-muted mb-0" id="students_summary">
+-                        Showing page <?= e((string) $page) ?> of <?= e((string) $totalPages) ?>
+-                        (<?= e((string) $total) ?> student<?= $total === 1 ? '' : 's' ?><?= $search !== '' ? ' matching search' : '' ?>).
++                        عرض الصفحة <?= e((string) $page) ?> من <?= e((string) $totalPages) ?>
++                        (عدد الطلاب: <?= e((string) $total) ?><?= $search !== '' ? ' مطابقون للبحث' : '' ?>).
+                     </p>
+                 </div>
+                 <div class="table-responsive">
+                     <table class="table table-hover align-middle mb-0 students-table" aria-describedby="students_summary">
+                         <thead class="table-light">
+                             <tr>
+-                                <th scope="col">Photo</th>
+-                                <th scope="col">ID</th>
+-                                <th scope="col">Name</th>
+-                                <th scope="col">Email</th>
+-                                <th scope="col">Phone</th>
+-                                <th scope="col">Address</th>
+-                                <th scope="col">Registered</th>
+-                                <th scope="col" class="text-end">Actions</th>
++                                <th scope="col">الصورة</th>
++                                <th scope="col">الرقم</th>
++                                <th scope="col">الاسم</th>
++                                <th scope="col">البريد الإلكتروني</th>
++                                <th scope="col">الهاتف</th>
++                                <th scope="col">العنوان</th>
++                                <th scope="col">تاريخ التسجيل</th>
++                                <th scope="col" class="text-end">الإجراءات</th>
+                             </tr>
+                         </thead>
+                         <tbody>
+@@ -143,10 +143,10 @@ $queryBase = static function (array $overrides = []) use ($search, $sort, $page)
+                                 <tr>
+                                     <td>
+                                         <?php if ($imgUrl !== null): ?>
+-                                            <img src="<?= e($imgUrl) ?>" alt="Photo of <?= e($sname) ?>" class="student-avatar rounded">
++                                            <img src="<?= e($imgUrl) ?>" alt="صورة <?= e($sname) ?>" class="student-avatar rounded">
+                                         <?php else: ?>
+                                             <div class="student-avatar student-avatar-placeholder rounded" aria-hidden="true"><?= e($initial) ?></div>
+-                                            <span class="visually-hidden">No photo for <?= e($sname) ?></span>
++                                            <span class="visually-hidden">لا توجد صورة لـ <?= e($sname) ?></span>
+                                         <?php endif; ?>
+                                     </td>
+                                     <td><?= e((string) $sid) ?></td>
+@@ -158,15 +158,15 @@ $queryBase = static function (array $overrides = []) use ($search, $sort, $page)
+                                     <td class="text-end">
+                                         <div class="students-actions">
+                                             <a class="btn btn-sm btn-outline-navy"
+-                                               href="<?= e(base_url('update_student.php?id=' . $sid)) ?>">Edit</a>
++                                               href="<?= e(base_url('update_student.php?id=' . $sid)) ?>">تعديل</a>
+                                             <button type="button"
+                                                     class="btn btn-sm btn-outline-danger"
+                                                     data-bs-toggle="modal"
+                                                     data-bs-target="#deleteStudentModal"
+                                                     data-student-id="<?= e((string) $sid) ?>"
+                                                     data-student-name="<?= e($sname) ?>"
+-                                                    aria-label="Delete <?= e($sname) ?>">
+-                                                Delete
++                                                    aria-label="حذف <?= e($sname) ?>">
++                                                حذف
+                                             </button>
+                                         </div>
+                                     </td>
+@@ -177,23 +177,23 @@ $queryBase = static function (array $overrides = []) use ($search, $sort, $page)
+                 </div>
+ 
+                 <?php if ($totalPages > 1): ?>
+-                    <nav class="mt-3" aria-label="Student list pagination">
++                    <nav class="mt-3" aria-label="ترقيم صفحات قائمة الطلاب">
+                         <ul class="pagination mb-0 flex-wrap">
+                             <li class="page-item<?= $page <= 1 ? ' disabled' : '' ?>">
+                                 <?php if ($page <= 1): ?>
+-                                    <span class="page-link" aria-disabled="true">Previous</span>
++                                    <span class="page-link" aria-disabled="true">السابق</span>
+                                 <?php else: ?>
+-                                    <a class="page-link" rel="prev" href="<?= e(base_url($queryBase(['page' => (string) ($page - 1)]))) ?>">Previous</a>
++                                    <a class="page-link" rel="prev" href="<?= e(base_url($queryBase(['page' => (string) ($page - 1)]))) ?>">السابق</a>
+                                 <?php endif; ?>
+                             </li>
+                             <li class="page-item disabled">
+-                                <span class="page-link" aria-current="page">Page <?= e((string) $page) ?> / <?= e((string) $totalPages) ?></span>
++                                <span class="page-link" aria-current="page">الصفحة <?= e((string) $page) ?> / <?= e((string) $totalPages) ?></span>
+                             </li>
+                             <li class="page-item<?= $page >= $totalPages ? ' disabled' : '' ?>">
+                                 <?php if ($page >= $totalPages): ?>
+-                                    <span class="page-link" aria-disabled="true">Next</span>
++                                    <span class="page-link" aria-disabled="true">التالي</span>
+                                 <?php else: ?>
+-                                    <a class="page-link" rel="next" href="<?= e(base_url($queryBase(['page' => (string) ($page + 1)]))) ?>">Next</a>
++                                    <a class="page-link" rel="next" href="<?= e(base_url($queryBase(['page' => (string) ($page + 1)]))) ?>">التالي</a>
+                                 <?php endif; ?>
+                             </li>
+                         </ul>
+@@ -212,17 +212,17 @@ $queryBase = static function (array $overrides = []) use ($search, $sort, $page)
+                 <?= csrf_field() ?>
+                 <input type="hidden" name="id" id="deleteStudentId" value="">
+                 <div class="modal-header">
+-                    <h2 class="modal-title fs-5" id="deleteStudentModalLabel">Confirm deletion</h2>
+-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
++                    <h2 class="modal-title fs-5" id="deleteStudentModalLabel">تأكيد الحذف</h2>
++                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                 </div>
+                 <div class="modal-body">
+                     <p class="mb-0">
+-                        Delete student <strong id="deleteStudentName"></strong>? This cannot be undone.
++                        هل تريد حذف الطالب <strong id="deleteStudentName"></strong>؟ لا يمكن التراجع عن هذا الإجراء.
+                     </p>
+                 </div>
+                 <div class="modal-footer">
+-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+-                    <button type="submit" class="btn btn-danger">Delete student</button>
++                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">إلغاء</button>
++                    <button type="submit" class="btn btn-danger">حذف الطالب</button>
+                 </div>
+             </form>
+         </div>
+-- 
+2.43.0
+
+
+From: alirismailov <ali.r.ismailov@gmail.com>
+Date: Fri, 6 Nov 2026 14:01:13 +0000
+Subject: [PATCH 2/3] Add InfinityFree deploy guide and hosting-ready SQL
+
+---
+ DEPLOY_INFINITYFREE.md                        | 50 +++++++++++++++++++
+ README.md                                     |  4 +-
+ .../student_registration_system_hosting.sql   | 35 +++++++++++++
+ 3 files changed, 88 insertions(+), 1 deletion(-)
+ create mode 100644 DEPLOY_INFINITYFREE.md
+ create mode 100644 database/student_registration_system_hosting.sql
+
+diff --git a/DEPLOY_INFINITYFREE.md b/DEPLOY_INFINITYFREE.md
+new file mode 100644
+index 0000000..d5653df
+--- /dev/null
++++ b/DEPLOY_INFINITYFREE.md
+@@ -0,0 +1,50 @@
++# Deploying to InfinityFree (free hosting)
++
++## 1. Create the hosting account
++1. Sign up at https://www.infinityfree.com and click **Create Account**.
++2. Pick a free subdomain (for example `my-students.infinityfreeapp.com`).
++3. Open the account's **Control Panel** (cPanel).
++
++## 2. Create the database
++1. In the Control Panel, open **MySQL Databases** and create a database.
++2. Write down the four values shown there:
++   - **MySQL Hostname** (looks like `sql123.infinityfree.com`)
++   - **MySQL Database Name** (looks like `if0_12345678_students`)
++   - **MySQL Username** (looks like `if0_12345678`)
++   - **MySQL Password** (your hosting account password; shown in the client area)
++3. Click **phpMyAdmin** next to the new database, open the **Import** tab, and upload
++   `database/student_registration_system_hosting.sql`.
++   (Do not use the other `.sql` file: it contains `CREATE DATABASE`, which InfinityFree blocks.)
++
++## 3. Add your database settings
++Create the file `config/database.local.php` with your values:
++
++```php
++<?php
++return [
++    'host' => 'sql123.infinityfree.com',
++    'port' => 3306,
++    'dbname' => 'if0_12345678_students',
++    'username' => 'if0_12345678',
++    'password' => 'YOUR_PASSWORD',
++    'charset' => 'utf8mb4',
++];
++```
++
++Optionally create `config/app.local.php` to hide PHP errors from visitors:
++
++```php
++<?php
++define('APP_ENV', 'production');
++```
++
++## 4. Upload the files
++1. In the Control Panel open **Online File Manager** (or use FileZilla with the FTP details from the client area).
++2. Open the `htdocs` folder and delete the default `index2.html` file if present.
++3. Upload everything from the project (contents of the zip, plus the two config files above) into `htdocs`,
++   so that `htdocs/index.php` exists.
++4. Make sure the `uploads/students/` folder exists (profile pictures are saved there).
++
++## 5. Test
++Open your subdomain. New InfinityFree sites can take up to 72 hours for DNS to work everywhere,
++but usually it is a few minutes. Register an account, log in, and add a student.
+diff --git a/README.md b/README.md
+index ec792f8..cffaa39 100644
+--- a/README.md
++++ b/README.md
+@@ -2,6 +2,8 @@
+ 
+ BWP501 — Syrian Virtual University.
+ 
++The web interface is in Arabic (right-to-left).
++
+ PHP/MySQL student administration app: authentication, CRUD, profile images, search, sorting, pagination, AJAX validation, and a Bootstrap 5 UI.
+ 
+  **Live Demo:** https://bwp501-hw-studentregsystem.infinityfreeapp.com/
+@@ -37,7 +39,7 @@ HTML5, CSS3, Vanilla JS, Bootstrap 5.3, PHP 8.x, MariaDB/MySQL, PDO.
+ 
+ ## Setup (local)
+ 
+-1. Import `database/student_registration_system.sql` (or use existing DB).
++1. Import `database/student_registration_system.sql` (or use existing DB). For free hosting see `DEPLOY_INFINITYFREE.md`.
+ 2. Copy `config/database.local.php.example` → `config/database.local.php` and set credentials.
+ 3. Ensure Apache can serve the project (e.g. junction under `htdocs/ab_hasan`).
+ 4. Open the site URL above and register an account.
+diff --git a/database/student_registration_system_hosting.sql b/database/student_registration_system_hosting.sql
+new file mode 100644
+index 0000000..0a531fa
+--- /dev/null
++++ b/database/student_registration_system_hosting.sql
+@@ -0,0 +1,35 @@
++-- Student Registration System
++-- BWP501 — MySQL schema (Phase 2)
++-- Compatible with MySQL and phpMyAdmin
++-- Charset: utf8mb4 (English + Arabic)
++
++
++
++-- ---------------------------------------------------------------------------
++-- users: authentication accounts
++-- password column stores a password_hash() result (never plaintext)
++-- ---------------------------------------------------------------------------
++CREATE TABLE IF NOT EXISTS `users` (
++  `id` INT NOT NULL AUTO_INCREMENT,
++  `username` VARCHAR(100) NOT NULL,
++  `email` VARCHAR(100) NOT NULL,
++  `password` VARCHAR(255) NOT NULL,
++  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
++  PRIMARY KEY (`id`),
++  UNIQUE KEY `uq_users_username` (`username`),
++  UNIQUE KEY `uq_users_email` (`email`)
++) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
++
++-- ---------------------------------------------------------------------------
++-- students: shared student records (no user_id ownership column)
++-- ---------------------------------------------------------------------------
++CREATE TABLE IF NOT EXISTS `students` (
++  `id` INT NOT NULL AUTO_INCREMENT,
++  `name` VARCHAR(100) NOT NULL,
++  `email` VARCHAR(100) NOT NULL,
++  `phone` VARCHAR(15) NOT NULL,
++  `address` TEXT NOT NULL,
++  `profile_picture` VARCHAR(255) NULL DEFAULT NULL,
++  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
++  PRIMARY KEY (`id`)
++) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- 
+2.43.0
+
+
+From: alirismailov <ali.r.ismailov@gmail.com>
+Date: Fri, 6 Nov 2026 14:04:02 +0000
+Subject: [PATCH 3/3] Ignore dist/ build outputs
+
+---
+ .gitignore | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/.gitignore b/.gitignore
+index 1533955..34feae5 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -14,3 +14,6 @@ uploads/students/*
+ 
+ # Optional local/production flags (no secrets ideally)
+ config/app.local.php
++
++# Build outputs (deploy zip, patches, screenshots)
++dist/
+-- 
+2.43.0
+

@@ -1,47 +1,45 @@
-# Student Registration System
+# نظام تسجيل الطلاب
 
-BWP501 — Syrian Virtual University.
+BWP501 — الجامعة الافتراضية السورية.
 
-The web interface is in Arabic (right-to-left).
+واجهة الويب باللغة العربية (من اليمين إلى اليسار).
 
-PHP/MySQL student administration app: authentication, CRUD, profile images, search, sorting, pagination, AJAX validation, and a Bootstrap 5 UI.
+تطبيق PHP/MySQL لإدارة الطلاب: المصادقة، والإضافة والعرض والتعديل والحذف (CRUD)، والصور الشخصية، والبحث، والفرز، وتقسيم الصفحات، والتحقق عبر AJAX، وواجهة مستخدم مبنية على Bootstrap 5.
 
- **Live Demo:** https://bwp501-hw-studentregsystem.infinityfreeapp.com/
+ **العرض المباشر:** https://bwp501-hw-studentregsystem.infinityfreeapp.com/
 
-## Stack
+## التقنيات المستخدمة
 
-HTML5, CSS3, Vanilla JS, Bootstrap 5.3, PHP 8.x, MariaDB/MySQL, PDO.
+HTML5، CSS3، Vanilla JS، Bootstrap 5.3، PHP 8.x، MariaDB/MySQL، PDO.
 
-## Status
+## الحالة
 
-| Item | Status |
+| البند | الحالة |
 |------|--------|
-| Local development | **COMPLETE** |
-| Public deployment | **COMPLETE** |
-| Public URL | **[LIVE](https://bwp501-hw-studentregsystem.infinityfreeapp.com/)** |
-| Final report | **COMPLETE** |
-| Moodle submission | **COMPLETE** |
+| التطوير المحلي | **مكتمل** |
+| النشر العام | **مكتمل** |
+| الرابط العام | **[متاح](https://bwp501-hw-studentregsystem.infinityfreeapp.com/)** |
+| التقرير النهائي | **مكتمل** |
+| التسليم على Moodle | **مكتمل** |
 
-## Local runtime
+## التشغيل المحلي
 
-- Site: http://127.0.0.1:8080/ab_hasan/
-- DB: XAMPP MariaDB **127.0.0.1:3306** (see `config/database.local.php`)
-- Start DB: `tools\start_xampp_mariadb_3306.bat`
-- Health: `C:\xampp\php\php.exe tools\check_database.php`
+- الموقع: http://127.0.0.1:8080/ab_hasan/
+- قاعدة البيانات: XAMPP MariaDB **127.0.0.1:3306** (راجع `config/database.local.php`)
+- تشغيل قاعدة البيانات: `tools\start_xampp_mariadb_3306.bat`
+- فحص الحالة: `C:\xampp\php\php.exe tools\check_database.php`
 
-## Features
+## الميزات
 
-- Register / login (username or email) / logout, hashing, sessions, CSRF
-- Student add / view / update / delete (confirmation modal)
-- Optional JPEG/PNG/WEBP profile pictures (≤ 2 MB) under `uploads/students/`
-- Search, allowlisted sorting, 10-per-page SQL pagination
-- AJAX validation via `api/validate_student.php`
+- إنشاء حساب / تسجيل الدخول (باسم المستخدم أو البريد الإلكتروني) / تسجيل الخروج، وتشفير كلمات المرور، والجلسات، والحماية من CSRF
+- إضافة الطلاب / عرضهم / تعديلهم / حذفهم (مع نافذة تأكيد)
+- صور شخصية اختيارية بصيغة JPEG/PNG/WEBP (≤ 2 ميغابايت) ضمن `uploads/students/`
+- البحث، والفرز ضمن قائمة خيارات مسموح بها، وتقسيم الصفحات عبر SQL بمعدل 10 طلاب لكل صفحة
+- التحقق عبر AJAX من خلال `api/validate_student.php`
 
-## Setup (local)
+## الإعداد (محلياً)
 
-1. Import `database/student_registration_system.sql` (or use existing DB). For free hosting see `DEPLOY_INFINITYFREE.md`.
-2. Copy `config/database.local.php.example` → `config/database.local.php` and set credentials.
-3. Ensure Apache can serve the project (e.g. junction under `htdocs/ab_hasan`).
-4. Open the site URL above and register an account.
-
-
+1. استورد `database/student_registration_system.sql` (أو استخدم قاعدة بيانات موجودة). للاستضافة المجانية راجع `DEPLOY_INFINITYFREE.md`.
+2. انسخ `config/database.local.php.example` ← `config/database.local.php` واضبط بيانات الاتصال.
+3. تأكد من أن Apache يستطيع تشغيل المشروع (مثلاً عبر junction ضمن `htdocs/ab_hasan`).
+4. افتح رابط الموقع أعلاه وأنشئ حساباً.
